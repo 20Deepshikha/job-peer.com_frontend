@@ -1,0 +1,160 @@
+import React, { useEffect, useState } from 'react';
+import './home.css'
+import { useParams, useNavigate } from 'react-router-dom';
+import AddJobs from './homeComponents/addJobs';
+import ViewJobs from './homeComponents/viewAllJobs';
+import Piechar from './homeComponents/piechar';
+import JobStatsBarChart from './homeComponents/barchat'
+import HomeJobs from '../home/homeComponents/HomeJobs'
+import Hamburger from 'hamburger-react';
+
+function Home() {
+  const { username } = useParams();
+  const navigate = useNavigate();
+
+  const [isOpen, setOpen] = useState(false);
+  const [storedUser, setStoredUser] = useState(null);
+  const [authenticate, setAuthenticate] = useState(false);
+  const [home, setHome] = useState(true);
+  const [addJob, setAddJob] = useState(false)
+  const [viewAllJobs, setViewAllJobs] = useState(false);
+  const [jobStats, setJobStats] = useState(true);
+  const [appStats, setAppStats] = useState(false);
+
+  useEffect(() => {
+    const userCheckStr = sessionStorage.getItem('User');
+    if (userCheckStr) {
+      const userCheck = JSON.parse(userCheckStr);
+      setStoredUser(userCheck);
+    } else {
+      console.log('Nothing in Storage');
+    }
+
+    // // Cleanup function with a delay to clear session storage
+    // return () => {
+    //   const timeoutId = setTimeout(() => {
+    //     sessionStorage.clear();
+    //     console.log('Session storage cleared after 5 minutes');
+    //   }, 300000); // 300000 milliseconds = 5 minutes
+
+    //   // Clear the timeout if the component remounts within the delay period
+    //   return () => clearTimeout(timeoutId);
+    // };
+  }, []);
+
+  useEffect(() => {
+    if (storedUser && storedUser.username === username) {
+      setAuthenticate(true);
+      console.log('Authentication successful');
+    } else {
+      setAuthenticate(false);
+      if (storedUser) {
+        console.log('Invalid User !!');
+        navigate('/login'); // Redirect to login page if authentication fails
+      }
+    }
+  }, [storedUser, username, navigate]); // Include `navigate` in dependencies
+
+  const handelAddJob = () => {
+    setAddJob(true)
+    setHome(false)
+    setViewAllJobs(false)
+    setOpen(false)
+  }
+
+  const handleHome = () => {
+    setHome(true)
+    setAddJob(false)
+    setViewAllJobs(false)
+    setOpen(false)
+  }
+
+  const handleJobs = () => {
+    setAddJob(false)
+    setHome(false)
+    setViewAllJobs(true)
+    setOpen(false)
+  }
+
+  const handleLogout = () => {
+    sessionStorage.clear()
+    navigate('/login')
+    setOpen(false)
+  }
+
+  const handleJobStats = () => {
+    setAppStats(false)
+    setJobStats(true)
+  }
+
+  const handleAppStats = () => {
+    setAppStats(true)
+    setJobStats(false)
+  }
+
+  return (
+    <>
+      {authenticate && storedUser ? <div>
+        <nav className={`nav ${isOpen ? 'open' : ''}`}>
+          <div className='hamburger-menu'>
+            <Hamburger toggled={isOpen} toggle={setOpen} />
+          </div>
+          {isOpen && (
+            <>
+              <button onClick={handleHome}>Home</button>
+              <button onClick={handelAddJob}>Add Job</button>
+              <button onClick={handleJobs}>View All Jobs</button>
+              <button className='logout-btn' onClick={handleLogout}>Log Out</button>
+            </>
+          )}
+          {!isOpen && (
+            <>
+              <button onClick={handleHome}>Home</button>
+              <button onClick={handelAddJob}>Add Job</button>
+              <button onClick={handleJobs}>View All Jobs</button>
+              <button className='logout-btn' onClick={handleLogout}>Log Out</button>
+            </>
+          )}
+        </nav>
+        {home && <div className='home'>
+          <h1 className='user-welcome'>
+            Welcome <span className='user-welcome-span'>{`${storedUser.name} !!`}</span>
+          </h1>
+          <div className='btn-container'>
+            <button className='add-btn' onClick={handelAddJob}>Add Job</button>
+
+          </div>
+
+          <div className='wrapper'>
+            <div className='charts-container'>
+              <div className='stats-btn'>
+                <button onClick={handleJobStats}>Jobs Stats</button>
+                <button onClick={handleAppStats}>Application Process Stats</button>
+              </div>
+              {jobStats && <div className='bar-chart-container'>
+                <JobStatsBarChart />
+              </div>}
+              {appStats && <div className='pie-chart-container'>
+                <Piechar />
+              </div>}
+            </div>
+            <div className='layout-job'>
+              <span>Recently Applied Jobs</span>
+              <HomeJobs />
+            </div>
+
+          </div>
+        </div>}
+        {addJob && <div>
+          <AddJobs />
+        </div>}
+        {viewAllJobs && <div>
+          <ViewJobs />
+        </div>}
+      </div> : 'Please Login First !!'}
+    </>
+  );
+}
+
+export default Home;
+

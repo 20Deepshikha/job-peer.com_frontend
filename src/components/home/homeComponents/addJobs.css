@@ -1,0 +1,95 @@
+.job-form {
+    width: 40%;
+    margin: auto;
+    margin-top: 2%;
+    background-color:whitesmoke;
+    padding: 2%;
+    box-shadow: 5px 9px 9px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.job-form:hover {
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.job-form-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px; /* Space between each input field */
+}
+
+.job-form-input input, .job-form-input textarea {
+    height: 5vh;
+    padding: 10px; /* Padding for better text visibility */
+    border-radius: 10px; /* Rounded borders */
+    border: 1px solid #ccc; /* Subtle border */
+    font-size: 100%;
+}
+
+.job-form-input textarea {
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 10vh; /* Minimum height */
+}
+
+.job-form-input-btn {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    margin: auto;
+    font-size: 100%;
+}
+
+.job-form-input-btn input[type="submit"] {
+    background-color: rgb(185, 160, 19); /* Green background */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.job-form-input-btn input[type="submit"]:hover {
+    background-color: #45a049; /* Darker shade of green */
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 1024px) {
+    .job-form {
+        width: 60%; /* Increased width for medium screens */
+        margin-top: 10%;
+        margin-bottom: 5%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .job-form {
+        width: 70%; /* Increased width for smaller screens */
+        margin-top: 10%;
+    }
+
+    .job-form-input input, .job-form-input textarea {
+        font-size: 90%; /* Smaller font size for smaller screens */
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .job-form {
+        width: 85%; /* Increased width for mobile devices */
+        margin-top: 10% ;
+    }
+
+    .job-form-input-btn {
+        width: 50%; /* Adjust button width for mobile */
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    .job-form {
+        width: 95%; /* Almost full width for very small screens */
+    }
+
+    .job-form-input-btn {
+        width: 70%; /* Adjust button width for very small screens */
+    }
+}
