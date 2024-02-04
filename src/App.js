@@ -6,6 +6,7 @@ import Signup from './components/signup/signup';
 import Home from './components/home/home';
 import ShowDetails from './components/home/homeComponents/ShowDetails';
 import Leaderboard from './components/home/homeComponents/leaderboard';
+import PageNotFound from './components/NotFound';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path='/home/:username' element={<Home/>}/>
         <Route path='/job_details/:id' element={<ShowDetails/>}/>
         <Route path='/leaderboard/:id' element={<Leaderboard/>}/>
+        <Route path="*" element={<PageNotFound />}/>
       </Routes>
     </Router>
   );

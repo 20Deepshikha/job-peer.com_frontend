@@ -10,6 +10,7 @@ import Hamburger from 'hamburger-react';
 import Leaderboard from './homeComponents/leaderboard';
 import Navbar from '../Navbar/Navbar';
 import SearchUser from './homeComponents/searchUser';
+import PageNotFound from '../NotFound';
 
 function Home() {
   const { username } = useParams();
@@ -170,7 +171,7 @@ function Home() {
         {viewAllJobs && <div>
           <ViewJobs />
         </div>}
-      </div> : 'Please Login First !!'}
+      </div> : <PageNotFound />}
     </>
   );
 }
