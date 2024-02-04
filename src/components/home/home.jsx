@@ -9,6 +9,7 @@ import HomeJobs from '../home/homeComponents/HomeJobs'
 import Hamburger from 'hamburger-react';
 import Leaderboard from './homeComponents/leaderboard';
 import Navbar from '../Navbar/Navbar';
+import SearchUser from './homeComponents/searchUser';
 
 function Home() {
   const { username } = useParams();
@@ -156,6 +157,7 @@ function Home() {
               </div>}
             </div>
             <div className='layout-job'>
+              <SearchUser></SearchUser>
               <span>Recently Applied Jobs</span>
               <HomeJobs />
             </div>
