@@ -197,7 +197,7 @@ export default function Signup() {
   
             <p className="mt-10 text-center text-sm text-gray-500">
               Already a member?{' '}
-              <a onClick={navigate('/')} style={{ textDecoration: 'none', cursor: 'pointer' }} href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+              <a onClick={()=>navigate('/')} style={{ textDecoration: 'none', cursor: 'pointer' }} href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                 Sign In
               </a>
             </p>
