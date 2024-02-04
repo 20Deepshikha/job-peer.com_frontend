@@ -129,18 +129,10 @@ function Home() {
           )}
         </nav> */}
         <Navbar handleHome={handleHome} handelAddJob={handelAddJob} handleJobs={handleJobs} handleLeaderboard={handleLeaderboard} handleLogout={handleLogout} isOpen={isOpen} setOpen={setOpen} username={storedUser.name} userEmail={storedUser.email}/>
-        <div className="py-10">
-          <header>
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">Welcome <span className='user-welcome-span'>{`${storedUser.name}`}</span>!!</h1>
-            </div>
-          </header>
-          <main>
-            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{/* Your content */}</div>
-          </main>
-        </div>
-        
         {home && <div className='home'>
+          <h1 className='user-welcome'>
+            Welcome <span className='user-welcome-span'>{`${storedUser.name} !!`}</span>
+          </h1>
 
           <div className='wrapper'>
             <div className='charts-container'>

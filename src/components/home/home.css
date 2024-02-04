@@ -1,35 +1,4 @@
 
-.hamburger-menu {
-    display: none; /* Hide by default */
-  }
-
-
-.hamburger-btn.logout-btn{
-    padding: 0;
-}
-
-nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 20px;
-    background-color: white;
-    border-bottom: solid #333;
-    padding: .5%;
-}
-
-
-/* Reduced font size and padding for nav buttons on smaller screens */
-nav button {
-    border: none;
-    background-color: transparent;
-    font-size: 180%;
-    color: rgb(89, 85, 85);
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    padding: 5px;
-}
-
-
 .btn-container {
     display: flex;
     flex-direction: row;
@@ -49,12 +18,6 @@ nav button {
 
 .add-btn {
     background-color: rgb(59, 59, 247);
-}
-
-.logout-btn {
-    background-color: rgb(228, 25, 25);
-    height: 90%;
-    margin-top: .2%;
 }
 
 .wrapper {
@@ -123,7 +86,7 @@ nav button {
 
 .user-welcome {
     text-align: center; /* Centered text for smaller screens */
-    font-size: 120%; /* Reduced font size for smaller screens */
+    font-size: 100%; /* Reduced font size for smaller screens */
 }
 
 .user-welcome-span {
@@ -143,15 +106,7 @@ nav button {
 @media only screen and (max-width: 768px){
     .home{
         padding-top: 10%;
-    }
-        .nav {
-          justify-content: space-between; /* Adjust if needed */
-          position:fixed;
-          background-color: #333;
-          z-index:5;
-          width: 100%;
-        }
-      
+    } 
         .hamburger-react{
             position: fixed !important;
             left:85%;
@@ -211,20 +166,13 @@ nav button {
 
     .user-welcome {
         text-align: left; /* Left-aligned text for larger screens */
-        margin-left: 2%;
+        padding-left: 2%;
         font-size: 150%; /* Increased font size for larger screens */
     }
 }
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-    nav {
-        padding-right: 10%; /* Increased padding for larger screens */
-    }
-
-    nav button {
-        font-size: 110%; /* Increased font size for larger screens */
-    }
 
     .btn-container {
         gap: 50px; /* Increased gap for larger screens */

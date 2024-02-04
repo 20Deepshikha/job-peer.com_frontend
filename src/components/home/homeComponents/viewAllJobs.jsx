@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../../config/axios';
 import './viewAllJobs.css';
+import '../../../App.css'
+import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid'
 
-function ViewJobs() {
+export default function ViewJobs() {
   const [jobs, setJobs] = useState([]);
   const [showDetail, setShowDetail] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
@@ -142,136 +144,70 @@ function ViewJobs() {
       setCheckSearch(false);
     }
   };
+ 
 
+  const [jobStatus, setJobStatus] = useState();
+  const handleStatus = (stat) => {
+    setJobStatus(stat)
+  }
   return (
-    <>
-      <div>
-        {!showDetail ? (
-          <div className='allJobs'>
-            <div className='search-container'>
-              <i class="gg-search"></i>
-              <input
-                type='text'
-                value={search}
-                placeholder='Search company or job title'
-                onChange={(e) => setSearch(e.target.value)}
-              />
+    
+    <ul role="list" className="pt-6 pr-6 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+           {jobs ? jobs.map((person) => (
+        <li key={person.id} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+          <div className="flex w-full items-center justify-between space-x-6 p-6">
+            <div className="flex-1 truncate">
+              <div className="flex items-center space-x-3">
+                <h3 className="truncate text-md font-medium text-gray-900">{person.company_name}</h3>
+              </div>
+              <p className="mt-1 truncate text-sm text-gray-500">{person.job_title}</p>
+              <p className="truncate text-sm gray-500">Applied on: {new Date(Date.parse(person.createdAt)).toLocaleDateString()}</p>
+
             </div>
-            <ul>
-              {filteredJobs.length > 0 ? (
-                filteredJobs.map((j) => (
-                  <li key={j.id} className={getShadowClass(j)}>
-                    {/* JobId: {j.id}<br /> */}
-                    <span style={{ color: 'black', fontWeight: '600', fontSize: '110%' }}>{j.job_title}</span><br />
-                    <span style={{ fontWeight: '400' }}>{j.company_name}</span><br />
-                    <div className='in-btns'>
-                      <span className='as-span'>Application Status</span>
-                      <div className='job-check'>
-                        {/* Each checkbox with its onChange handler */}
-                        <div className='input-lable'>
-                          <label>Application Processing</label>
-                          <input type='checkbox' checked={j.application_processing} onChange={() => handleCheckboxChange(j.id, 'application_processing')} />
-                        </div>
-                        <div className='input-lable'>
-                          <label>Following Up</label>
-                          <input type='checkbox' checked={j.following_up} onChange={() => handleCheckboxChange(j.id, 'following_up')} />
-                        </div>
-                        <div className='input-lable'>
-                          <label>Interviewing</label>
-                          <input type='checkbox' checked={j.interviewing} onChange={() => handleCheckboxChange(j.id, 'interviewing')} />
-                        </div>
-                        <div className='input-lable'>
-                          <label>Rejected</label>
-                          <input type='checkbox' checked={j.rejected} onChange={() => handleCheckboxChange(j.id, 'rejected')} />
-                        </div>
-                      </div>
-                      <div className='job-btn-container'>
-                        <button className='job-detail-btn' onClick={() => handleDetail(j.id)}>Show Details</button>
-                        <button className='job-delete-btn' onClick={() => handleDelete(j.id)}>Delete</button>
-                      </div>
-                    </div>
-                  </li>
-                ))
-              ) : jobs.length > 0 ? (
-                jobs.map((j) => (
-                  <li key={j.id} className={getShadowClass(j)}>
-                    {/* JobId: {j.id}<br /> */}
-                    <span style={{ color: 'black', fontWeight: '600' }}>{j.job_title}</span><br />
-                    <span style={{ fontWeight: '400' }}>{j.company_name}</span><br />
-                    <div className='in-btns'>
-                      <span className='as-span'>Application Status</span>
-                      <div className='job-check'>
-                        {/* Each checkbox with its onChange handler */}
-                        <div className='input-lable'>
-                          <label>Application Processing</label>
-                          <input type='checkbox' checked={j.application_processing} onChange={() => handleCheckboxChange(j.id, 'application_processing')} />
-                        </div>
-                        <div className='input-lable'>
-                          <label>Following Up</label>
-                          <input type='checkbox' checked={j.following_up} onChange={() => handleCheckboxChange(j.id, 'following_up')} />
-                        </div>
-                        <div className='input-lable'>
-                          <label>Interviewing</label>
-                          <input type='checkbox' checked={j.interviewing} onChange={() => handleCheckboxChange(j.id, 'interviewing')} />
-                        </div>
-                        <div className='input-lable'>
-                          <label>Rejected</label>
-                          <input type='checkbox' checked={j.rejected} onChange={() => handleCheckboxChange(j.id, 'rejected')} />
-                        </div>
-                      </div>
-                      <div className='job-btn-container'>
-                        <button className='job-detail-btn' onClick={() => handleDetail(j.id)}>Show Details</button>
-                        <button className='job-delete-btn' onClick={() => handleDelete(j.id)}>Delete</button>
-                      </div>
-                    </div>
-                  </li>
-                ))
-              ) : (
-                <p>No jobs available or data is still loading.</p>
-              )}
-            </ul>
-          </div>) : (
-          <div>
-            {selectedJob && !editmode ? (
-              <div className='detail-mode'>
-                <div className='detail-btn'>
-                  <button className='detail-edit' onClick={handleEditClick}>Edit Job</button>
-                  <button className='detail-back' onClick={handleBack}>Back</button>
-                </div>
-                <div className='details'>
-                  <p className='status'>Application Status: <span>{getApplicationStatus(selectedJob)}</span></p>
-                  <p className='job-title'><span>Title </span><br />{selectedJob.job_title}</p>
-                  <hr></hr>
-                  <p className='company-name'><span>Company Name </span><br />{selectedJob.company_name}</p>
-                  <hr></hr>
-                  <p className='job-description'><span>Job Description </span><br /><pre>{selectedJob.job_description}</pre></p>
-                  <hr></hr>
-                  <p className='date-applied'><span>Applied On </span><br />{new Date(selectedJob.job_applied_date).toLocaleString()}</p>
-                  <hr></hr>
-                  <p className='job-link'><span>Job Applied Link </span><br /><a href={selectedJob.job_applied_link} target="_blank" rel="noopener noreferrer">{selectedJob.job_applied_link}</a></p>
-                </div>
-              </div>
-            ) : selectedJob && editmode ? (
-              <div className="edit-form">
-                <input class="edit-input" type="text" value={editJob.job_title} onChange={e => handleInputChange(e, 'job_title')} placeholder="Job Title" />
-                <input class="edit-input" type="text" value={editJob.company_name} onChange={e => handleInputChange(e, 'company_name')} placeholder="Company Name" />
-                <textarea class="edit-textarea" value={editJob.job_description} onChange={e => handleInputChange(e, 'job_description')} placeholder="Job Description"></textarea>
-                <input class="edit-input" type="text" value={editJob.job_applied_link} onChange={e => handleInputChange(e, 'job_applied_link')} placeholder="Job Link" />
-                <div className="form-buttons">
-                  <button className="save-btn" onClick={handleSave}>Save</button>
-                  <button className="cancel-btn" onClick={handleCancel}>Cancel</button>
-                </div>
-              </div>
-            ) : (
-              <p>Please add jobs to check the jobs.</p>
-            )}
+            {person.application_processing === 1 ? (
+    <span class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">Badge</span>
+
+  ) : person.following_up === 1 ? (
+    <span className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+      Badge
+    </span>
+  ) : person.interviewing === 1 ? (
+    <span className="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+      Badge
+    </span>
+  ) : person.rejected === 1 ? (
+    <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+      Badge
+    </span>
+  ) : (
+    // Render application_processing badge when all properties are 0
+    <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+      Applied
+    </span>
+  )}
           </div>
-        )}
-      </div>
-    </>
-  );
-
+          <div>
+            <div className="-mt-px flex divide-x divide-gray-200">
+              <div className="flex w-0 flex-1">
+                <button
+                  onClick={() => handleDetail(person.id)}
+                  className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                >
+                  Details
+                </button>
+              </div>
+              <div className="-ml-px flex w-0 flex-1">
+                <button
+                  onClick={() => handleDelete(person.id)}
+                  className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </li>
+         )): (<p>No jobs available or data is still loading.</p>)}
+    </ul>
+  )
 }
-
-export default ViewJobs;
-
