@@ -7,6 +7,7 @@ import Piechar from './homeComponents/piechar';
 import JobStatsBarChart from './homeComponents/barchat'
 import HomeJobs from '../home/homeComponents/HomeJobs'
 import Hamburger from 'hamburger-react';
+import SearchUser from './homeComponents/searchUser';
 
 function Home() {
   const { username } = useParams();
@@ -139,6 +140,7 @@ function Home() {
               </div>}
             </div>
             <div className='layout-job'>
+              <SearchUser></SearchUser>
               <span>Recently Applied Jobs</span>
               <HomeJobs />
             </div>

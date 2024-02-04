@@ -6,8 +6,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import api from '../../config/axios'
 import { useNavigate } from 'react-router-dom';
-import Particles from "react-tsparticles";
-import particlesConfig from '../particles/particlesConfig.json'; 
+// import Particles from "react-tsparticles";
+// import particles from '../particles/particlesConfig.json'; 
 
 function Signup() {
 
@@ -43,7 +43,6 @@ function Signup() {
 
     return (
         <div className='main'>
-            <Particles options={particlesConfig} className="particles" />
             <h1>Signup</h1>
             <Form className='main-container' onSubmit={HandleSubmit}>
                 <Row className="row-container">
