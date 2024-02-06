@@ -4,6 +4,7 @@ import { UsersIcon } from '@heroicons/react/24/outline'
 import { Combobox, Dialog, Transition } from '@headlessui/react'
 import api from '../config/axios'
 import Navbar from './Navbar'
+import { IoIosPersonAdd } from "react-icons/io";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -21,7 +22,7 @@ export default function Leaderboard() {
 
     useEffect(() => {
         const username = JSON.parse(sessionStorage.getItem('User')).username;
-        
+
         setStoredUser(username);
     }, []);
 
@@ -32,16 +33,16 @@ export default function Leaderboard() {
             try {
                 const response = await api.get(`/searchPeer/${storedUser}/${query}`);
                 const peopleData = response.data;
-    
+
                 // Initialize an object to track request states
                 let requestStates = {};
-    
+
                 // Fetch request state for each person
                 for (const person of peopleData) {
                     const requestResponse = await api.get(`/checkRequest/${storedUser}/${person.username}`);
                     requestStates[person.username] = requestResponse.data.reqSend;
                 }
-    
+
                 setPeople(peopleData);
                 setAddClick(requestStates);
             } catch (error) {
@@ -130,11 +131,13 @@ export default function Leaderboard() {
                         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                             <button
                                 type="button"
-                                className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                className="flex items-center justify-center gap-2 rounded-md mr-20 mt-10 bg-gray-400 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
                                 onClick={handleSearch}
                             >
+                                <IoIosPersonAdd className="text-lg md:text-xl" />
                                 Add Peer
                             </button>
+
 
                         </div>
                     </div>
@@ -147,37 +150,37 @@ export default function Leaderboard() {
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 text-center">
                                                 Username
                                                 <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible text-center">
-                                                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                                                    {/* <ChevronDownIcon className="h-5 w-5" aria-hidden="true" /> */}
                                                 </span>
                                             </th>
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 text-center">
                                                 Name
                                                 <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible text-center">
-                                                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                                                    {/* <ChevronDownIcon className="h-5 w-5" aria-hidden="true" /> */}
                                                 </span>
                                             </th>
                                             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 text-center">
                                                 Total Job Applied
                                                 <span className="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200 text-center">
-                                                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                                                    {/* <ChevronDownIcon className="h-5 w-5" aria-hidden="true" /> */}
                                                 </span>
                                             </th>
                                             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 text-center">
                                                 Job Applied In One Hour
                                                 <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
-                                                    <ChevronDownIcon
+                                                    {/* <ChevronDownIcon
                                                         className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
                                                         aria-hidden="true"
-                                                    />
+                                                    /> */}
                                                 </span>
                                             </th>
                                             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                                 Job Applied In One Day
                                                 <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
-                                                    <ChevronDownIcon
+                                                    {/* <ChevronDownIcon
                                                         className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
                                                         aria-hidden="true"
-                                                    />
+                                                    /> */}
                                                 </span>
                                             </th>
                                             <th scope="col" className="relative py-3.5 pl-3 pr-0">
