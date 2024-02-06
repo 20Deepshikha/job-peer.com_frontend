@@ -16,6 +16,7 @@ export default function Leaderboard() {
     const [query, setQuery] = useState('')
     const [people, setPeople] = useState([]);
     const [peerJobs, setPeerJobs] = useState([]);
+    const [addClick, setAddClick] = useState(false);
     const [peers, setPeers] = useState();
 
     useEffect(() => {
@@ -47,29 +48,30 @@ export default function Leaderboard() {
 
     // Fetch peer jobs
     useEffect(() => {
-        const fetchPeers = async () => {
+        const fetchUsers = async (query) => {
+            if (!query) return;
             try {
-                const response = await api.get(`/confirmedPeer/${storedUser}`);
-                const data = response.data;
-                const filteredPeers = data.map(peer => {
-                    if (peer.requestedPeerLeaderBoard.username !== storedUser) {
-                        return peer.requestedPeerLeaderBoard;
-                    }
-                    else if (peer.requestingPeerLeaderBoard.username !== storedUser) {
-                        return peer.requestingPeerLeaderBoard;
-                    }
-                    return null;
-                }).filter(peer => peer !== null); 
-                setPeerJobs(filteredPeers); 
+                const response = await api.get(`/searchPeer/${storedUser}/${query}`);
+                const peopleData = response.data;
+    
+                // Initialize an object to track request states
+                let requestStates = {};
+    
+                // Fetch request state for each person
+                for (const person of peopleData) {
+                    const requestResponse = await api.get(`/checkRequest/${storedUser}/${person.username}`);
+                    requestStates[person.username] = requestResponse.data.reqSend;
+                }
+    
+                setPeople(peopleData);
+                setAddClick(requestStates);
             } catch (error) {
-                console.error('Error fetching peer jobs:', error);
+                console.error('Error fetching users:', error);
             }
         };
-
-        if (storedUser) {
-            fetchPeers();
-        }
-    }, [storedUser]);
+        fetchUsers(query);
+    }, [query, storedUser]);
+    
 
     const handleSearch = () => {
         setOpen(true)
@@ -80,153 +82,168 @@ export default function Leaderboard() {
         try {
             const response = await api.get(`/peerFollow/${storedUser}/${person.username}`);
             console.log(response.data.message);
+            setAddClick(prevState => ({ ...prevState, [person.username]: true }));
+            // setPeerJobs(currentPeers => [...currentPeers, person]);
         } catch (error) {
             console.error('Error sending follow request:', error);
         }
     };
 
-    const handleUnAdd = () => {
-        console.log('inside function')
-    }
+    const handleUnAdd = async (personUsername) => {
+        if (!storedUser) return;
+        try {
+            const response = await api.delete(`/peerUnFollow/${storedUser}/${personUsername}`);
+            console.log(response.data.message);
+            // Remove the person from peerJobs state
+            setAddClick(prevState => ({ ...prevState, [personUsername]: false }));
+            setPeerJobs(currentPeers => currentPeers.filter(peer => peer.username !== personUsername));
+        } catch (error) {
+            console.error('Error sending unfollow request:', error);
+        }
+    };
+
 
     return (
         <>
-        <Navbar />
-        <div className="px-4 sm:px-6 lg:px-8">
-            {!open ? <>
-                <div className="sm:flex sm:items-center">
-                    <div className="sm:flex-auto">
-                        <h1 className="text-base font-semibold leading-6 text-gray-900">Leaderboard</h1>
-                        {/* <p className="mt-2 text-sm text-gray-700">
+            <Navbar />
+            <div className="px-4 sm:px-6 lg:px-8">
+                {!open ? <>
+                    <div className="sm:flex sm:items-center">
+                        <div className="sm:flex-auto">
+                            <h1 className="text-base font-semibold leading-6 text-gray-900">Leaderboard</h1>
+                            {/* <p className="mt-2 text-sm text-gray-700">
                             A list of all the users in your account including their name, title, email and role.
                         </p> */}
-                    </div>
-                    <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                        <button
-                            type="button"
-                            className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            onClick={handleSearch}
-                        >
-                            Add Peer
-                        </button>
+                        </div>
+                        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                            <button
+                                type="button"
+                                className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                onClick={handleSearch}
+                            >
+                                Add Peer
+                            </button>
 
-                    </div>
-                </div>
-                <div className="mt-8 flow-root">
-                    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                            <table className="min-w-full divide-y divide-gray-300">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 text-center">
-                                            Name
-                                            <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible text-center">
-                                                <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
-                                            </span>
-                                        </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 text-center">
-                                            Total Job Applied
-                                            <span className="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200 text-center">
-                                                <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
-                                            </span>
-                                        </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 text-center">
-                                            Job Applied In One Hour
-                                            <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
-                                                <ChevronDownIcon
-                                                    className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-                                                    aria-hidden="true"
-                                                />
-                                            </span>
-                                        </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                            Job Applied In One Day
-                                            <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
-                                                <ChevronDownIcon
-                                                    className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-                                                    aria-hidden="true"
-                                                />
-                                            </span>
-                                        </th>
-                                        <th scope="col" className="relative py-3.5 pl-3 pr-0">
-                                            <span className="sr-only">Edit</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200 bg-white">
-                                    {peerJobs.map((person) => (
-                                        <tr key={person.id}>
-                                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 tx text-center">
-                                                {person.username}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobs}</td>
-                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsDay}</td>
-                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsHour}</td>
-                                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0 text-center">
-                                                <button
-                                                    type="button"
-                                                    className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center"
-                                                    onClick={handleUnAdd}
-                                                >
-                                                    Unadd Peer
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
                         </div>
                     </div>
-                </div>
-            </> : <Transition.Root show={open} as={Fragment} afterLeave={() => setQuery('')} appear>
-                <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
-                    </Transition.Child>
-
-                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
+                    <div className="mt-8 flow-root">
+                        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                                <table className="min-w-full divide-y divide-gray-300">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 text-center">
+                                                Username
+                                                <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible text-center">
+                                                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                                                </span>
+                                            </th>
+                                            <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 text-center">
+                                                Name
+                                                <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible text-center">
+                                                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                                                </span>
+                                            </th>
+                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 text-center">
+                                                Total Job Applied
+                                                <span className="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200 text-center">
+                                                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                                                </span>
+                                            </th>
+                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 text-center">
+                                                Job Applied In One Hour
+                                                <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
+                                                    <ChevronDownIcon
+                                                        className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
+                                                        aria-hidden="true"
+                                                    />
+                                                </span>
+                                            </th>
+                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                Job Applied In One Day
+                                                <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
+                                                    <ChevronDownIcon
+                                                        className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
+                                                        aria-hidden="true"
+                                                    />
+                                                </span>
+                                            </th>
+                                            <th scope="col" className="relative py-3.5 pl-3 pr-0">
+                                                <span className="sr-only">Edit</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200 bg-white">
+                                        {peerJobs.map((person) => (
+                                            <tr key={person.id}>
+                                                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 tx text-center">
+                                                    {person.username}
+                                                </td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.name}</td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobs}</td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsHour}</td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsDay}</td>
+                                                <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0 text-center">
+                                                    <button
+                                                        type="button"
+                                                        className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center"
+                                                        onClick={() => handleUnAdd(person.username)}
+                                                    >
+                                                        Unadd Peer
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </> : <Transition.Root show={open} as={Fragment} afterLeave={() => setQuery('')} appear>
+                    <Dialog as="div" className="relative z-10" onClose={setOpen}>
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
-                            enterFrom="opacity-0 scale-95"
-                            enterTo="opacity-100 scale-100"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
                             leave="ease-in duration-200"
-                            leaveFrom="opacity-100 scale-100"
-                            leaveTo="opacity-0 scale-95"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
                         >
-                            <Dialog.Panel className="mx-auto max-w-xl transform rounded-xl bg-white p-2 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
-                                <Combobox onChange={(person) => (handleAdd)}>
-                                    <Combobox.Input
-                                        className="w-full rounded-md border-0 bg-gray-100 px-4 py-2.5 text-gray-900 focus:ring-0 sm:text-sm"
-                                        placeholder="Search..."
-                                        onChange={(event) => setQuery(event.target.value)}
-                                    />
-                                    {filteredPeople.length > 0 && (
-                                        <Combobox.Options
-                                            static
-                                            className="-mb-2 max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800"
-                                        >
-                                            {filteredPeople.map((person) => (
-                                                <Combobox.Option
-                                                    key={person.id}
-                                                    value={person}
-                                                    className={({ active }) =>
-                                                        classNames(
-                                                            'cursor-default select-none rounded-md px-4 py-2 flex justify-between items-center',
-                                                            active ? 'bg-gray-300' : 'text-gray-900'
-                                                        )
-                                                    }
-                                                >
-                                                    <span>{person.name}</span>
-                                                    <span>@{person.username}</span>
+                            <div className="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
+                        </Transition.Child>
+
+                        <div className="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel className="mx-auto max-w-xl transform rounded-xl bg-white p-2 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
+                                    <Combobox onChange={(person) => (handleAdd)}>
+                                        <Combobox.Input
+                                            className="w-full rounded-md border-0 bg-gray-100 px-4 py-2.5 text-gray-900 focus:ring-0 sm:text-sm"
+                                            placeholder="Search..."
+                                            onChange={(event) => setQuery(event.target.value)}
+                                        />
+                                        {filteredPeople.map((person) => (
+                                            <Combobox.Option
+                                                key={person.id}
+                                                value={person}
+                                                className={({ active }) =>
+                                                    classNames(
+                                                        'cursor-default select-none rounded-md px-4 py-2 flex justify-between items-center',
+                                                        active ? 'bg-gray-300' : 'text-gray-900'
+                                                    )
+                                                }
+                                            >
+                                                <span>{person.name}</span>
+                                                <span>@{person.username}</span>
+                                                {!addClick[person.username] ? (
                                                     <button
                                                         type="button"
                                                         className="ml-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -234,25 +251,33 @@ export default function Leaderboard() {
                                                     >
                                                         Add Peer
                                                     </button>
-                                                </Combobox.Option>
-                                            ))}
-                                        </Combobox.Options>
-                                    )}
+                                                ) : (
+                                                    <button
+                                                        type="button"
+                                                        className="ml-4 inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                                        onClick={() => handleUnAdd(person.username)}
+                                                    >
+                                                        Cancel Add Request
+                                                    </button>
+                                                )}
+                                            </Combobox.Option>
+                                        ))}
 
 
-                                    {query !== '' && filteredPeople.length === 0 && (
-                                        <div className="px-4 py-14 text-center sm:px-14">
-                                            <UsersIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                                            <p className="mt-4 text-sm text-gray-900">No people found using that search term.</p>
-                                        </div>
-                                    )}
-                                </Combobox>
-                            </Dialog.Panel>
-                        </Transition.Child>
-                    </div>
-                </Dialog>
-            </Transition.Root>}
-        </div>
+
+                                        {query !== '' && filteredPeople.length === 0 && (
+                                            <div className="px-4 py-14 text-center sm:px-14">
+                                                <UsersIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
+                                                <p className="mt-4 text-sm text-gray-900">No people found using that search term.</p>
+                                            </div>
+                                        )}
+                                    </Combobox>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </Dialog>
+                </Transition.Root>}
+            </div>
         </>
     )
 }
