@@ -37,7 +37,7 @@ export default function ViewAllJobs() {
     if (userCheckStr) {
       const userCheck = JSON.parse(userCheckStr);
       setStoredUser(userCheck);
-  
+
       if (userCheck && userCheck.username === username) {
         setAuthenticate(true);
         console.log("Authentication successful");
@@ -55,7 +55,7 @@ export default function ViewAllJobs() {
     }
   }, [username, navigate]);
 
- // Include `navigate` in dependencies
+  // Include `navigate` in dependencies
 
   useEffect(() => {
     const username = JSON.parse(sessionStorage.getItem("User")).username;
@@ -85,7 +85,7 @@ export default function ViewAllJobs() {
     setShowJobCards(false);
     console.log("Detail view for job ID:", id);
   };
-  
+
   const handelAddJob = () => {
     setAddJob(!addJob);
   };
@@ -263,12 +263,22 @@ export default function ViewAllJobs() {
         <div>
           <Navbar
           />
+          <div className='search-container relative mb-5'>
+            <i class="gg-search absolute inset-y-0 left-0 flex items-center pl-3"></i>
+            <input
+              type='text'
+              value={search}
+              placeholder='Search company or job title'
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
           {showJobCards && <ul
             role="list"
             className="pt-6 pr-6 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4"
           >
-            {jobs ? (
-              jobs.map((person) => (
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((person) => (
                 <li
                   key={person.id}
                   className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
@@ -302,14 +312,14 @@ export default function ViewAllJobs() {
                       <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-800 ring-1 ring-inset ring-yellow-600/20">
                         Interviewing
                       </span>
-                    ) : person.rejected ===true ? (
+                    ) : person.rejected === true ? (
                       <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
                         Reject
                       </span>
                     ) : (
                       // Render application_processing badge when all properties are 0
                       <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                        Applied 
+                        Applied
                       </span>
                     )}
                   </div>
@@ -335,7 +345,73 @@ export default function ViewAllJobs() {
                   </div>
                 </li>
               ))
-            ) : (
+            ):jobs ?(jobs.map((person) => (
+              <li
+                key={person.id}
+                className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
+              >
+                <div className="flex w-full items-center justify-between space-x-6 p-6">
+                  <div className="flex-1 truncate">
+                    <div className="flex items-center space-x-3">
+                      <h3 className="truncate text-md font-medium text-gray-900">
+                        {person.company_name}
+                      </h3>
+                    </div>
+                    <p className="mt-1 truncate text-sm text-gray-500">
+                      {person.job_title}
+                    </p>
+                    <p className="truncate text-sm gray-500">
+                      Applied on:{" "}
+                      {new Date(
+                        Date.parse(person.createdAt)
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+                  {person.application_processing === true ? (
+                    <span class="inline-flex flex-shrink-0 items-center rounded-full bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-green-600/20">
+                      Application Processing
+                    </span>
+                  ) : person.following_up === true ? (
+                    <span className="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                      Following up
+                    </span>
+                  ) : person.interviewing === true ? (
+                    <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-800 ring-1 ring-inset ring-yellow-600/20">
+                      Interviewing
+                    </span>
+                  ) : person.rejected === true ? (
+                    <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                      Reject
+                    </span>
+                  ) : (
+                    // Render application_processing badge when all properties are 0
+                    <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                      Applied
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <div className="-mt-px flex divide-x divide-gray-200">
+                    <div className="flex w-0 flex-1">
+                      <button
+                        onClick={() => handleDetail(person.id)}
+                        className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                      >
+                        Details
+                      </button>
+                    </div>
+                    <div className="-ml-px flex w-0 flex-1">
+                      <button
+                        onClick={() => handleDelete(person.id)}
+                        className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))) : (
               <p>No jobs available or data is still loading.</p>
             )}
 
@@ -348,9 +424,9 @@ export default function ViewAllJobs() {
           </ul>}
 
           {showDetail && (
-          <div className="overflow-hidden rounded-lg bg-gray-50">
-      <div className="px-4 py-5 sm:p-6"><ShowDetails jobId={selectedJobId} onBack={handleShowJobs}  onUpdate={handleJobUpdate}/></div>
-    </div>
+            <div className="overflow-hidden rounded-lg bg-gray-50">
+              <div className="px-4 py-5 sm:p-6"><ShowDetails jobId={selectedJobId} onBack={handleShowJobs} onUpdate={handleJobUpdate} /></div>
+            </div>
           )}
         </div>
       ) : (
