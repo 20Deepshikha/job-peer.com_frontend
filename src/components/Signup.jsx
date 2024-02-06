@@ -1,28 +1,11 @@
-import './signup.css'
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import api from '../../config/axios'
+import api from '../config/axios'
 import { useNavigate } from 'react-router-dom';
-import Particles from "react-tsparticles";
-import particlesConfig from '../particles/particlesConfig.json'; 
 
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
+
 export default function Signup() {
     const [status, setStatus] = useState(null);
     const [name, setName]= useState();
