@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import AddJobs from "./home/homeComponents/addJobs";
 import PageNotFound from "./NotFound";
 import ShowDetails from "./home/homeComponents/ShowDetails";
+import { IoSearch } from "react-icons/io5";
 
 export default function ViewAllJobs() {
   const [jobs, setJobs] = useState([]);
@@ -263,14 +264,14 @@ export default function ViewAllJobs() {
         <div>
           <Navbar
           />
-          <div className='search-container relative mb-5'>
-            <i class="gg-search absolute inset-y-0 left-0 flex items-center pl-3"></i>
+          <div className="relative mb-5">
+            <IoSearch className="absolute inset-y-0 left-0 top-2.5 ml-3 text-gray-400" size={20} />
             <input
-              type='text'
+              type="text"
               value={search}
-              placeholder='Search company or job title'
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Search company or job title"
+              className="w-full pl-10 pr-4 py-2 border rounded-md shadow-sm placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           {showJobCards && <ul
@@ -345,7 +346,7 @@ export default function ViewAllJobs() {
                   </div>
                 </li>
               ))
-            ):jobs ?(jobs.map((person) => (
+            ) : jobs ? (jobs.map((person) => (
               <li
                 key={person.id}
                 className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
