@@ -80,12 +80,10 @@ export default function ViewAllJobs() {
   }, [search]);
 
   const handleDetail = (id) => {
-    // setSelectedJobId(id);
-    // setShowJobCards(!showJobCards);
-     // Toggle between showJobCards and hideJobCards
-    setShowDetail(true);     // Toggle between showDetail and hideDetail
+    setSelectedJobId(id);
+    setShowDetail(true);
     setShowJobCards(false);
-    console.log("hello")
+    console.log("Detail view for job ID:", id);
   };
   
   const handelAddJob = () => {
@@ -107,6 +105,11 @@ export default function ViewAllJobs() {
     }
   };
 
+  const handleShowJobs = () => {
+    setShowDetail(false);
+    setShowJobCards(true);
+  };
+
   const handleBack = () => {
     setShowDetail(false);
     setSelectedJobId(null);
@@ -122,6 +125,7 @@ export default function ViewAllJobs() {
   const handleInputChange = (e, field) => {
     setEditJob((prev) => ({ ...prev, [field]: e.target.value }));
   };
+
 
   const handleSave = async () => {
     try {
@@ -281,26 +285,26 @@ export default function ViewAllJobs() {
                         ).toLocaleDateString()}
                       </p>
                     </div>
-                    {person.application_processing === 1 ? (
-                      <span class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                        Applied
+                    {person.application_processing === true ? (
+                      <span class="inline-flex flex-shrink-0 items-center rounded-full bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-green-600/20">
+                        Application Processing
                       </span>
-                    ) : person.following_up === 1 ? (
-                      <span className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                    ) : person.following_up === true ? (
+                      <span className="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
                         Following up
                       </span>
-                    ) : person.interviewing === 1 ? (
-                      <span className="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                    ) : person.interviewing === true ? (
+                      <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-800 ring-1 ring-inset ring-yellow-600/20">
                         Interviewing
                       </span>
-                    ) : person.rejected === 1 ? (
+                    ) : person.rejected ===true ? (
                       <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
                         Reject
                       </span>
                     ) : (
                       // Render application_processing badge when all properties are 0
                       <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                        Applied
+                        Applied 
                       </span>
                     )}
                   </div>
@@ -339,11 +343,8 @@ export default function ViewAllJobs() {
           </ul>}
 
           {showDetail && (
-
-
-            
-            <div className="overflow-hidden rounded-lg bg-gray-50">
-      <div className="px-4 py-5 sm:p-6"><ShowDetails /></div>
+          <div className="overflow-hidden rounded-lg bg-gray-50">
+      <div className="px-4 py-5 sm:p-6"><ShowDetails jobId={selectedJobId} onBack={handleShowJobs} /></div>
     </div>
           )}
         </div>

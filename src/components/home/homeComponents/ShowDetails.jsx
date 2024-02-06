@@ -1,290 +1,251 @@
-import React, { useEffect, useState } from "react";
-import api from "../../../config/axios";
-import { useNavigate, useParams } from "react-router-dom";
-import { PaperClipIcon } from "@heroicons/react/20/solid";
-const notificationMethods = [
-  { id: 'email', title: 'Email' },
-  { id: 'sms', title: 'Phone (SMS)' },
-  { id: 'push', title: 'Push notification' },
-]
+import React, { useState, useEffect } from "react";
+import api from '../../../config/axios';
+import { CheckCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 
-function ShowDetails() {
-  const [job, setJob] = useState([]);
-  const [editmode, setEditmode] = useState(false);
-  const [editJob, setEditJob] = useState({});
-  const navigate = useNavigate();
+const applicationStatusOptions = [
+  { id: 'application_processing', title: 'Application Processing' },
+  { id: 'rejected', title: 'Rejected' },
+  { id: 'interviewing', title: 'Interviewing' },
+  { id: 'following_up', title: 'Following Up' },
+];
 
-  const { id } = useParams();
+function ShowDetails({ jobId, onBack }) {
+  const [formData, setFormData] = useState({});
+  const [editMode, setEditMode] = useState(null);
+  const [notification, setNotification] = useState({ show: false, message: '' });
 
   useEffect(() => {
-    const username = JSON.parse(sessionStorage.getItem("User")).username;
-    api
-      .get(`/jobDetail/${username}/${id}`)
-      .then((response) => {
-        setJob(response.data);
-        // console.log('response: ', job)
-      })
-      .catch((error) => {
-        console.error("error fetching job: ", error);
-      });
-  }, [id]);
+    const fetchJobDetails = async () => {
+      try {
+        const username = JSON.parse(sessionStorage.getItem("User")).username;
+        const response = await api.get(`/jobDetail/${username}/${jobId}`);
+        setFormData({ ...response.data, job_applied_date: new Date(response.data.job_applied_date).toLocaleString() });
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+      }
+    };
+    if (jobId) fetchJobDetails();
+  }, [jobId]);
 
-  const handleBack = () => {
-    navigate(-1);
+  const fields = [
+    { key: "job_title", label: "Job Title" },
+    { key: "company_name", label: "Company Name" },
+    { key: "job_description", label: "Job Description" },
+    { key: "job_applied_date", label: "Applied Date" },
+    { key: "job_applied_link", label: "Application Link" },
+    { key: "appliedThrough", label: "Applied Through" },
+  ];
+
+  function Notification({ message, onDismiss }) {
+    return (
+      <div className="rounded-md bg-green-50 p-4">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
+          </div>
+          <div className="ml-3">
+            <p className="text-sm font-medium text-green-800">{message}</p>
+          </div>
+          <div className="ml-auto pl-3">
+            <div className="-mx-1.5 -my-1.5">
+              <button
+                onClick={onDismiss}
+                className="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+              >
+                <span className="sr-only">Dismiss</span>
+                <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleEdit = (field) => {
+    setEditMode(field); 
   };
 
-  const handleEditClick = () => {
-    setEditmode(true);
-    setEditJob({
-      id: job.id, // Ensure to include the job ID
-      job_title: job.job_title || "", // Default to empty string if null
-      company_name: job.company_name || "",
-      job_description: job.job_description || "",
-      job_applied_link: job.job_applied_link || "",
-    });
-  };
-
-  const handleInputChange = (e, field) => {
-    setEditJob((prev) => ({ ...prev, [field]: e.target.value }));
-  };
-
-  const handleSave = async () => {
+  const handleSave = async (fieldKey) => {
     try {
-      const response = await api.put(`/editJobs/${editJob.id}`, editJob);
-      console.log("Job edited successfully:", response.data);
+      const updatedData = { [fieldKey]: formData[fieldKey] };
+      await api.put(`/editJobs/${jobId}`, updatedData);
 
-      // Update the job with the new job data
-      setJob({ ...job, ...editJob });
-      setEditmode(false); // Exit edit mode
+      const fieldLabel = fields.find(field => field.key === fieldKey)?.label || fieldKey; // Fallback to fieldKey if not found
+
+      setNotification({ show: true, message: `${fieldLabel} updated successfully.` });
+      setEditMode(null); 
     } catch (error) {
-      console.error("Error saving job:", error);
+      console.error("Error updating job detail:", error);
     }
   };
 
-  const handleCancel = () => {
-    setEditmode(false);
+
+  const handleChange = (e, field) => {
+    setFormData((prevData) => ({ ...prevData, [field]: e.target.value }));
   };
 
-  const getApplicationStatus = () => {
-    let status = [];
-    if (job.application_processing) status.push("Application Processing");
-    if (job.following_up) status.push("Following Up");
-    if (job.interviewing) status.push("Interviewing");
-    if (job.rejected) status.push("Rejected");
-    return status.join(" & ") || "Application status not selected !!"; // Join with ' & ' or default to 'Not Started'
+  const handleStatusChange = async (status) => {
+    try {
+      const statusUpdate = {
+        application_processing: false,
+        rejected: false,
+        interviewing: false,
+        following_up: false,
+        [status]: true,
+      };
+      await api.put(`/editJobs/${jobId}`, statusUpdate);
+      alert(`Application status updated to ${applicationStatusOptions.find(opt => opt.id === status).title}.`);
+      setFormData({ ...formData, ...statusUpdate });
+    } catch (error) {
+      console.error("Error updating application status:", error);
+    }
   };
+
+  if (!formData.job_title) return <div>Loading...</div>;
 
   return (
     <>
-      <div className="overflow-hidden p-5 bg-white shadow sm:rounded-lg">
-        <div>
-          <div className="px-4 sm:px-0">
-            <h3 className="text-base font-semibold leading-7 text-gray-900">
-              Applicant Information
-            </h3>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-              Personal details and application.
-            </p>
-          </div>
-          <div>
-            
-          </div>
+      {notification.show && (<Notification message={notification.message} onDismiss={() => setNotification({ show: false, message: '' })} />
+      )}
+      <div className="overflow-hidden bg-white p-2.5 shadow sm:rounded-lg">
+        {/* Application Status Selection */}
+        <div className="flex justify-end p-2">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center rounded-md bg-red-50 p-2 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+          >
+            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+            <span className="ml-2">Back to Jobs</span>
+          </button>
+        </div>
+        <div className="mb-5">
+          <h3 className="text-lg font-medium leading-6 text-gray-900">Application Status</h3>
+          <fieldset>
+            <legend className="sr-only">Application Status</legend>
+            {/* Use flex-col for the default (small screens), and flex-row on medium screens and larger */}
+            <div className="mt-4 space-y-4 sm:space-y-0 sm:flex sm:flex-row sm:space-x-4">
+              {applicationStatusOptions.map((option) => (
+                <div key={option.id} className="flex items-center">
+                  <input
+                    id={option.id}
+                    name="application-status"
+                    type="radio"
+                    checked={formData[option.id]}
+                    onChange={() => handleStatusChange(option.id)}
+                    className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                  />
+                  <label htmlFor={option.id} className="ml-3 block text-sm font-medium text-gray-700">
+                    {option.title}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </fieldset>
         </div>
 
-        <div className="mt-6 border-t border-gray-100">
-          <dl className="divide-y divide-gray-100">
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                Full name
-              </dt>
-              <dd className="mt-1 flex text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="flex-grow">Margot Foster</span>
-                <span className="ml-4 flex-shrink-0">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Update
-                  </button>
-                </span>
-              </dd>
-            </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                Application for
-              </dt>
-              <dd className="mt-1 flex text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="flex-grow">Backend Developer</span>
-                <span className="ml-4 flex-shrink-0">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Update
-                  </button>
-                </span>
-              </dd>
-            </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                Email address
-              </dt>
-              <dd className="mt-1 flex text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="flex-grow">margotfoster@example.com</span>
-                <span className="ml-4 flex-shrink-0">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Update
-                  </button>
-                </span>
-              </dd>
-            </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                Salary expectation
-              </dt>
-              <dd className="mt-1 flex text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="flex-grow">$120,000</span>
-                <span className="ml-4 flex-shrink-0">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Update
-                  </button>
-                </span>
-              </dd>
-            </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                About
-              </dt>
-              <dd className="mt-1 flex text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="flex-grow">
-                  Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim
-                  incididunt cillum culpa consequat. Excepteur qui ipsum aliquip
-                  consequat sint. Sit id mollit nulla mollit nostrud in ea
-                  officia proident. Irure nostrud pariatur mollit ad adipisicing
-                  reprehenderit deserunt qui eu.
-                </span>
-                <span className="ml-4 flex-shrink-0">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Update
-                  </button>
-                </span>
-              </dd>
-            </div>
-            <div className="flex flex-">
-      <label className="text-base font-semibold text-gray-900">Notifications</label>
-      <p className="text-sm text-gray-500">How do you prefer to receive notifications?</p>
-      <fieldset className="mt-4">
-        <legend className="sr-only">Notification method</legend>
-        <div className="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
-          {notificationMethods.map((notificationMethod) => (
-            <div key={notificationMethod.id} className="flex items-center">
-              <input
-                id={notificationMethod.id}
-                name="notification-method"
-                type="radio"
-                defaultChecked={notificationMethod.id === 'email'}
-                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-              />
-              <label htmlFor={notificationMethod.id} className="ml-3 block text-sm font-medium leading-6 text-gray-900">
-                {notificationMethod.title}
-              </label>
-            </div>
-          ))}
-        </div>
-      </fieldset>
-    </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                Attachments
-              </dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <ul
-                  role="list"
-                  className="divide-y divide-gray-100 rounded-md border border-gray-200"
-                >
-                  <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                    <div className="flex w-0 flex-1 items-center">
-                      <PaperClipIcon
-                        className="h-5 w-5 flex-shrink-0 text-gray-400"
-                        aria-hidden="true"
-                      />
-                      <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                        <span className="truncate font-medium">
-                          resume_back_end_developer.pdf
-                        </span>
-                        <span className="flex-shrink-0 text-gray-400">
-                          2.4mb
-                        </span>
-                      </div>
-                    </div>
-                    <div className="ml-4 flex flex-shrink-0 space-x-4">
-                      <button
-                        type="button"
-                        className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
-                      >
-                        Update
-                      </button>
-                      <span className="text-gray-200" aria-hidden="true">
-                        |
-                      </span>
-                      <button
-                        type="button"
-                        className="rounded-md bg-white font-medium text-gray-900 hover:text-gray-800"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </li>
-                  <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                    <div className="flex w-0 flex-1 items-center">
-                      <PaperClipIcon
-                        className="h-5 w-5 flex-shrink-0 text-gray-400"
-                        aria-hidden="true"
-                      />
-                      <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                        <span className="truncate font-medium">
-                          coverletter_back_end_developer.pdf
-                        </span>
-                        <span className="flex-shrink-0 text-gray-400">
-                          4.5mb
-                        </span>
-                      </div>
-                    </div>
-                    <div className="ml-4 flex flex-shrink-0 space-x-4">
-                      <button
-                        type="button"
-                        className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
-                      >
-                        Update
-                      </button>
-                      <span className="text-gray-200" aria-hidden="true">
-                        |
-                      </span>
-                      <button
-                        type="button"
-                        className="rounded-md bg-white font-medium text-gray-900 hover:text-gray-800"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </li>
-                </ul>
-              </dd>
-            </div>
+
+        {/* Job Details */}
+        <h3 className="text-lg font-medium leading-6 text-gray-900">Job Details</h3>
+        <p className="mt-1 text-sm text-gray-500">Review and edit job application details.</p>
+        <div className="mt-5 border-t border-gray-200">
+          <dl>
+            {fields.map(({ key, label }) => (
+              <div key={key} className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="mt-3 text-sm font-medium text-gray-500">{label}</dt>
+                <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  <div className="flex flex-col sm:flex-row items-center w-full">
+                    {editMode === key ? (
+                      key === "job_description" ? (
+                        <div className="flex-grow w-full sm:flex sm:items-center">
+                          <textarea
+                            name={key}
+                            value={formData[key] || ''}
+                            onChange={(e) => handleChange(e, key)}
+                            className="flex-grow border border-gray-300 p-2 w-full"
+                            style={{ minHeight: '100px' }}
+                          />
+                          <button
+                            onClick={() => handleSave(key)}
+                            className="mt-2 sm:mt-0 sm:ml-4 rounded-md bg-white px-4 py-2 text-md text-indigo-600 hover:text-indigo-500"
+                          >
+                            Save
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <input
+                            type="text"
+                            name={key}
+                            value={formData[key] || ''}
+                            onChange={(e) => handleChange(e, key)}
+                            className="flex-grow border border-gray-300 p-2 w-full"
+                          />
+                          <button
+                            onClick={() => handleSave(key)}
+                            className="mt-2 sm:mt-0 sm:ml-4 rounded-md bg-white px-4 py-2 text-md text-indigo-600 hover:text-indigo-500"
+                          >
+                            Save
+                          </button>
+                        </>
+                      )
+                    ) : (
+                      <>
+                        {key === "job_description" ? (
+                          <div className="flex-grow w-full sm:flex sm:items-center">
+                            <pre style={{
+                              whiteSpace: 'pre-wrap',
+                              wordBreak: 'break-word',
+                              overflowWrap: 'break-word',
+                              fontFamily: 'inherit',
+                              fontSize: 'inherit',
+                              background: '#f3f4f6',
+                              borderRadius: '0.375rem',
+                              padding: '0.5rem',
+                              margin: '0.5rem 0',
+                            }}>
+                              {formData[key]}
+                            </pre>
+                          </div>
+                        ) : key === "job_applied_link" ? (
+                          <a
+                            href={formData[key]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              whiteSpace: 'pre-wrap',
+                              wordBreak: 'break-word',
+                              overflowWrap: 'break-word',
+                              fontFamily: 'inherit',
+                              fontSize: 'inherit',
+                              padding: '0.5rem',
+                              margin: '0.5rem 0',
+                            }}
+                            className="text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                          >
+                            {formData[key]}
+                          </a>
+                        ) : (
+                          <span className="flex-grow">{formData[key]}</span>
+                        )}
+                        <button
+                          onClick={() => handleEdit(key)}
+                          className="ml-4 rounded-md bg-white px-4 py-2 text-md text-indigo-600 hover:text-indigo-500"
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </dd>
+              </div>
+            ))}
           </dl>
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 }
 
 export default ShowDetails;
+
