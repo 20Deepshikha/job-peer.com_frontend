@@ -41,6 +41,9 @@ export default function AddJobs({handelAddJob}) {
         
           // Fetch and update the job data
           handelAddJob();
+
+          //reloading page after every job is saved
+          window.location.reload();
         } catch (error) {
           console.error('Error submitting job:', error);
         }
