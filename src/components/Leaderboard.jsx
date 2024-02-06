@@ -21,32 +21,11 @@ export default function Leaderboard() {
 
     useEffect(() => {
         const username = JSON.parse(sessionStorage.getItem('User')).username;
+        
         setStoredUser(username);
     }, []);
 
 
-    useEffect(() => {
-        const fetchUsers = async (query) => {
-            if (!query) return;
-            try {
-                const response = await api.get(`/searchPeer/${storedUser}/${query}`);
-                setPeople(response.data);
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
-        };
-        fetchUsers(query);
-    }, [query]);
-
-    const filteredPeople =
-        query === ''
-            ? []
-            : people.filter((person) => {
-                return person.name.toLowerCase().includes(query.toLowerCase())
-            })
-
-
-    // Fetch peer jobs
     useEffect(() => {
         const fetchUsers = async (query) => {
             if (!query) return;
@@ -71,7 +50,40 @@ export default function Leaderboard() {
         };
         fetchUsers(query);
     }, [query, storedUser]);
-    
+
+    const filteredPeople =
+        query === ''
+            ? []
+            : people.filter((person) => {
+                return person.name.toLowerCase().includes(query.toLowerCase())
+            })
+
+
+    // Fetch peer jobs
+    useEffect(() => {
+        const fetchPeers = async () => {
+            try {
+                const response = await api.get(`/confirmedPeer/${storedUser}`);
+                const data = response.data;
+                const filteredPeers = data.map(peer => {
+                    if (peer.requestedPeerLeaderBoard.username !== storedUser) {
+                        return peer.requestedPeerLeaderBoard;
+                    }
+                    else if (peer.requestingPeerLeaderBoard.username !== storedUser) {
+                        return peer.requestingPeerLeaderBoard;
+                    }
+                    return null;
+                }).filter(peer => peer !== null);
+                setPeerJobs(filteredPeers);
+            } catch (error) {
+                console.error('Error fetching peer jobs:', error);
+            }
+        };
+
+        if (storedUser) {
+            fetchPeers();
+        }
+    }, [storedUser]);
 
     const handleSearch = () => {
         setOpen(true)
@@ -82,8 +94,8 @@ export default function Leaderboard() {
         try {
             const response = await api.get(`/peerFollow/${storedUser}/${person.username}`);
             console.log(response.data.message);
-            setAddClick(prevState => ({ ...prevState, [person.username]: true }));
             // setPeerJobs(currentPeers => [...currentPeers, person]);
+            setAddClick(prevState => ({ ...prevState, [person.username]: true }));
         } catch (error) {
             console.error('Error sending follow request:', error);
         }
@@ -95,8 +107,8 @@ export default function Leaderboard() {
             const response = await api.delete(`/peerUnFollow/${storedUser}/${personUsername}`);
             console.log(response.data.message);
             // Remove the person from peerJobs state
-            setAddClick(prevState => ({ ...prevState, [personUsername]: false }));
             setPeerJobs(currentPeers => currentPeers.filter(peer => peer.username !== personUsername));
+            setAddClick(prevState => ({ ...prevState, [personUsername]: false }));
         } catch (error) {
             console.error('Error sending unfollow request:', error);
         }
