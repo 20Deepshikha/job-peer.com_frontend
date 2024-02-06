@@ -9,7 +9,7 @@ const applicationStatusOptions = [
   { id: 'following_up', title: 'Following Up' },
 ];
 
-function ShowDetails({ jobId, onBack }) {
+function ShowDetails({ jobId, onBack, onUpdate }) {
   const [formData, setFormData] = useState({});
   const [editMode, setEditMode] = useState(null);
   const [notification, setNotification] = useState({ show: false, message: '' });
@@ -38,19 +38,22 @@ function ShowDetails({ jobId, onBack }) {
 
   function Notification({ message, onDismiss }) {
     return (
-      <div className="rounded-md bg-green-50 p-4">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-green-800">{message}</p>
-          </div>
-          <div className="ml-auto pl-3">
-            <div className="-mx-1.5 -my-1.5">
+      <div
+        className={`fixed top-0 inset-x-0 mx-auto max-w-lg z-50 transform transition-all duration-500 ${notification.show ? 'translate-y-0' : '-translate-y-full'
+          }`}
+      >
+        <div className="rounded-md bg-green-50 p-4 shadow-lg">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-800">{message}</p>
+            </div>
+            <div className="ml-auto pl-3">
               <button
                 onClick={onDismiss}
-                className="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+                className="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600"
               >
                 <span className="sr-only">Dismiss</span>
                 <XMarkIcon className="h-5 w-5" aria-hidden="true" />
@@ -62,19 +65,21 @@ function ShowDetails({ jobId, onBack }) {
     );
   }
 
+
   const handleEdit = (field) => {
-    setEditMode(field); 
+    setEditMode(field);
   };
 
   const handleSave = async (fieldKey) => {
     try {
       const updatedData = { [fieldKey]: formData[fieldKey] };
       await api.put(`/editJobs/${jobId}`, updatedData);
-
+      const updatedJob = { ...formData, [fieldKey]: formData[fieldKey] }
+      onUpdate(jobId, updatedJob)
       const fieldLabel = fields.find(field => field.key === fieldKey)?.label || fieldKey; // Fallback to fieldKey if not found
 
       setNotification({ show: true, message: `${fieldLabel} updated successfully.` });
-      setEditMode(null); 
+      setEditMode(null);
     } catch (error) {
       console.error("Error updating job detail:", error);
     }
@@ -95,8 +100,15 @@ function ShowDetails({ jobId, onBack }) {
         [status]: true,
       };
       await api.put(`/editJobs/${jobId}`, statusUpdate);
-      alert(`Application status updated to ${applicationStatusOptions.find(opt => opt.id === status).title}.`);
-      setFormData({ ...formData, ...statusUpdate });
+
+      const updatedFormData = { ...formData, ...statusUpdate };
+      setFormData(updatedFormData);
+
+      if (typeof onUpdate === 'function') {
+        onUpdate(jobId, updatedFormData);
+      }
+
+      setNotification({ show: true, message: `${applicationStatusOptions.find(opt => opt.id === status).title} updated successfully.` });
     } catch (error) {
       console.error("Error updating application status:", error);
     }
@@ -123,7 +135,6 @@ function ShowDetails({ jobId, onBack }) {
           <h3 className="text-lg font-medium leading-6 text-gray-900">Application Status</h3>
           <fieldset>
             <legend className="sr-only">Application Status</legend>
-            {/* Use flex-col for the default (small screens), and flex-row on medium screens and larger */}
             <div className="mt-4 space-y-4 sm:space-y-0 sm:flex sm:flex-row sm:space-x-4">
               {applicationStatusOptions.map((option) => (
                 <div key={option.id} className="flex items-center">

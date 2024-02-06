@@ -110,6 +110,11 @@ export default function ViewAllJobs() {
     setShowJobCards(true);
   };
 
+  const handleJobUpdate = (updatedJobId, updatedJobDetails) => {
+    setJobs(currentJobs => currentJobs.map(job => job.id === updatedJobId ? updatedJobDetails : job));
+  };
+
+
   const handleBack = () => {
     setShowDetail(false);
     setSelectedJobId(null);
@@ -344,7 +349,7 @@ export default function ViewAllJobs() {
 
           {showDetail && (
           <div className="overflow-hidden rounded-lg bg-gray-50">
-      <div className="px-4 py-5 sm:p-6"><ShowDetails jobId={selectedJobId} onBack={handleShowJobs} /></div>
+      <div className="px-4 py-5 sm:p-6"><ShowDetails jobId={selectedJobId} onBack={handleShowJobs}  onUpdate={handleJobUpdate}/></div>
     </div>
           )}
         </div>
