@@ -7,7 +7,7 @@ import Piechar from "./home/homeComponents/piechar";
 import JobStatsBarChart from "./home/homeComponents/barchat";
 import HomeJobs from "./home/homeComponents/HomeJobs";
 import Hamburger from "hamburger-react";
-import Leaderboard from "./home/homeComponents/leaderboard";
+import Leaderboard from "./Leaderboard";
 import Navbar from "./Navbar";
 import SearchUser from "./home/homeComponents/searchUser";
 import PageNotFound from "./NotFound";

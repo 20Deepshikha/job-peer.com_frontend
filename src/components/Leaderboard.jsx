@@ -2,7 +2,8 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Fragment, useState, useEffect } from 'react'
 import { UsersIcon } from '@heroicons/react/24/outline'
 import { Combobox, Dialog, Transition } from '@headlessui/react'
-import api from '../../../config/axios'
+import api from '../config/axios'
+import Navbar from './Navbar'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -89,6 +90,8 @@ export default function Leaderboard() {
     }
 
     return (
+        <>
+        <Navbar />
         <div className="px-4 sm:px-6 lg:px-8">
             {!open ? <>
                 <div className="sm:flex sm:items-center">
@@ -250,6 +253,7 @@ export default function Leaderboard() {
                 </Dialog>
             </Transition.Root>}
         </div>
+        </>
     )
 }
 

@@ -14,13 +14,6 @@ const Navbar = () => {
   const [addJob, setAddJob] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [storedUser, setStoredUser] = useState(null);
-  const [authenticate, setAuthenticate] = useState(false);
-  const [home, setHome] = useState(true);
-
-  const [viewAllJobs, setViewAllJobs] = useState(false);
-  const [jobStats, setJobStats] = useState(true);
-  const [appStats, setAppStats] = useState(false);
-  const [leaderboard, setLeaderboard] = useState(false);
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
@@ -33,6 +26,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const userCheckStr = sessionStorage.getItem("User");
+    // console.log("User", userCheckStr);
     if (userCheckStr) {
       const userCheck = JSON.parse(userCheckStr);
       setStoredUser(userCheck);
@@ -62,6 +56,12 @@ const Navbar = () => {
     console.log("Navigating to:", `/home/${username}`);
     navigate(`/home/${username}`); // Then navigate
   };
+  const handleLeaderboard = () => {
+    handleLinkClick("home");
+    console.log("activeLink after updating:", activeLink);
+    console.log("Navigating to:", `/leaderboard/${username}`);
+    navigate(`/leaderboard/${username}`);
+  };
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -69,23 +69,19 @@ const Navbar = () => {
     setOpen(false);
   };
 
-  const handleJobStats = () => {
-    setLeaderboard(false);
-    setAppStats(false);
-    setJobStats(true);
-  };
+  // const handleJobStats = () => {
+  //   setLeaderboard(false);
+  //   setAppStats(false);
+  //   setJobStats(true);
+  // };
 
-  const handleAppStats = () => {
-    setLeaderboard(false);
-    setAppStats(true);
-    setJobStats(false);
-  };
+  // const handleAppStats = () => {
+  //   setLeaderboard(false);
+  //   setAppStats(true);
+  //   setJobStats(false);
+  // };
 
-  const handleLeaderboard = () => {
-    setAppStats(false);
-    setJobStats(false);
-    setLeaderboard(true);
-  };
+
 
   return (
     <Disclosure as="nav" className="bg-white shadow">
@@ -120,10 +116,9 @@ const Navbar = () => {
                 </div>
                 <div className="hidden md:ml-6 md:flex md:space-x-8">
                   <a
-                    style={{ textDecoration: "none", cursor: "pointer" }}
                     onClick={handleHome}
                     className={classNames(
-                      "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500",
+                      "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 no-underline cursor-pointer",
                       activeLink === "home"
                         ? "border-b-2 border-indigo-500 text-gray-900"
                         : "hover:border-gray-300 hover:text-gray-700"
@@ -132,10 +127,9 @@ const Navbar = () => {
                     Home
                   </a>
                   <a
-                    style={{ textDecoration: "none", cursor: "pointer" }}
                     onClick={handleJobs}
                     className={classNames(
-                      "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500",
+                      "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 no-underline cursor-pointer",
                       activeLink === "jobs"
                         ? "border-b-2 border-indigo-500 text-gray-900"
                         : "hover:border-gray-300 hover:text-gray-700"
@@ -144,10 +138,9 @@ const Navbar = () => {
                     Jobs
                   </a>
                   <a
-                    style={{ textDecoration: "none", cursor: "pointer" }}
                     onClick={handleLeaderboard}
                     className={classNames(
-                      "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500",
+                      "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 no-underline cursor-pointer",
                       activeLink === "leaderboard"
                         ? "border-b-2 border-indigo-500 text-gray-900"
                         : "hover:border-gray-300 hover:text-gray-700"
@@ -162,7 +155,7 @@ const Navbar = () => {
                   <button
                     type="button"
                     onClick={handelAddJob}
-                    className="relative inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="relative inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 no-underline cursor-pointer"
                   >
                     <PlusIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
                     Add Job
@@ -204,14 +197,10 @@ const Navbar = () => {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              style={{
-                                textDecoration: "none",
-                                cursor: "pointer",
-                              }}
                               href="#"
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                "block px-4 py-2 text-sm text-gray-700 no-underline"
                               )}
                             >
                               Your Profile
@@ -221,14 +210,10 @@ const Navbar = () => {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              style={{
-                                textDecoration: "none",
-                                cursor: "pointer",
-                              }}
                               href="#"
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                "block px-4 py-2 text-sm text-gray-700 no-underline"
                               )}
                             >
                               Settings
@@ -238,14 +223,10 @@ const Navbar = () => {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              style={{
-                                textDecoration: "none",
-                                cursor: "pointer",
-                              }}
                               onClick={handleLogout}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                "block px-4 py-2 text-sm text-gray-700 no-underline"
                               )}
                             >
                               Sign out
@@ -264,28 +245,41 @@ const Navbar = () => {
             <div className="space-y-1 pb-3 pt-2">
               {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
               <Disclosure.Button
+                onClick={handleHome}
                 as="a"
                 href="#"
-                className="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6"
+                className={classNames(
+                  "block py-2 pl-3 pr-4 text-base font-medium sm:pl-5 sm:pr-6 no-underline",
+                  activeLink === "home" ? "border-l-4 border-indigo-500 bg-indigo-50 text-indigo-700" : "border-l-4 border-transparent text-gray-500",
+                  "hover:border-gray-300 hover:text-gray-700"
+                )}
               >
                 Home
               </Disclosure.Button>
               <Disclosure.Button
+                onClick={handleJobs}
                 as="a"
                 href="#"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-              >
+                className={classNames(
+                  "block py-2 pl-3 pr-4 text-base font-medium sm:pl-5 sm:pr-6 no-underline",
+                  activeLink === "jobs" ? "border-l-4 border-indigo-500 bg-indigo-50 text-indigo-700" : "border-l-4 border-transparent text-gray-500",
+                  "hover:border-gray-300 hover:text-gray-700"
+                )} >
                 Jobs
               </Disclosure.Button>
               <Disclosure.Button
+              onClick={handleLeaderboard} 
                 as="a"
                 href="#"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-              >
+                className={classNames(
+                  "block py-2 pl-3 pr-4 text-base font-medium sm:pl-5 sm:pr-6 no-underline",
+                  activeLink === "leaderboard" ? "border-l-4 border-indigo-500 bg-indigo-50 text-indigo-700" : "border-l-4 border-transparent text-gray-500",
+                  "hover:border-gray-300 hover:text-gray-700"
+                )}>
                 Leaderboard
               </Disclosure.Button>
             </div>
-            <div className="border-t border-gray-200 pb-3 pt-4">
+            <div className="border-t border-gray-200 pb-3 pt-4 no-underline">
               <div className="flex items-center px-4 sm:px-6">
                 <div className="flex-shrink-0">
                   <img
@@ -299,12 +293,12 @@ const Navbar = () => {
                     {storedUser && storedUser.username}
                   </div>
                   <div className="text-sm font-medium text-gray-500">
-                    {storedUser && storedUser.userEmail}
+                    {storedUser && storedUser.email}
                   </div>
                 </div>
                 <button
                   type="button"
-                  className="relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 no-underline"
                 >
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
@@ -315,21 +309,22 @@ const Navbar = () => {
                 <Disclosure.Button
                   as="a"
                   href="#"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6 no-underline"
                 >
                   Your Profile
                 </Disclosure.Button>
                 <Disclosure.Button
                   as="a"
                   href="#"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6 no-underline"
                 >
                   Settings
                 </Disclosure.Button>
                 <Disclosure.Button
+                  onClick={handleLogout}
                   as="a"
                   href="#"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6 no-underline"
                 >
                   Sign out
                 </Disclosure.Button>

@@ -4,7 +4,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Home from './components/Home';
 import ShowDetails from './components/home/homeComponents/ShowDetails';
-import Leaderboard from './components/home/homeComponents/leaderboard';
+import Leaderboard from './components/Leaderboard';
 import PageNotFound from './components/NotFound';
 import ViewAllJobs from './components/Jobs';
 import './App.css'
