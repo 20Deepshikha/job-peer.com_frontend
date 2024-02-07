@@ -5,6 +5,8 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { useParams, useNavigate } from "react-router-dom";
 import AddJobs from "./home/homeComponents/addJobs";
+import profilePic from "../assets/profile/profilePic.jpeg"
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -179,7 +181,7 @@ const Navbar = () => {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          src={profilePic}
                           alt=""
                         />
                       </Menu.Button>
@@ -284,7 +286,7 @@ const Navbar = () => {
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={profilePic}
                     alt=""
                   />
                 </div>
