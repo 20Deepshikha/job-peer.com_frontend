@@ -52,27 +52,6 @@ const navigation = [
   },
 ];
 
-const stats = [
-  {
-    name: "Number of deploys",
-    value: "405",
-  },
-  {
-    name: "Average deploy time",
-    value: "3.65",
-    unit: "mins",
-  },
-  {
-    name: "Number of servers",
-    value: "3",
-  },
-  {
-    name: "Success rate",
-    value: "98.5%",
-  },
-];
-
-
 const moods = [
   {
     name: "Excited",
@@ -163,6 +142,11 @@ export default function Home() {
     }
   }, [storedUser, username, navigate]); // Include `navigate` in dependencies
 
+  // useEffect(()=>{
+  //   const getLeaderBoard = async()=>{
+  //     await api.get(``)
+  //   }
+  // })
   // const handleHome = () => {
   //   setLeaderboard(false);
   //   setHome(true);
@@ -195,77 +179,109 @@ export default function Home() {
   //   setLeaderboard(true);
   // };
 
+  const stats = storedUser ? [
+    {
+      name: "User Name",
+      value: storedUser.username,
+    },
+    {
+      name: "Total Jobs Applied",
+      value: "405",
+    },
+    {
+      name: "Jobs Applied in one hour",
+      value: "3.65",
+      unit: "mins",
+    },
+    {
+      name: "Jobs applied in six hours",
+      value: "3",
+    },
+    {
+      name: "Jobs Applied in one day",
+      value: "98.5%",
+    },
+    {
+      name: "Jobs Applied in one week",
+      value: "10"
+    },
+    {
+      name: "Jobs Applied in one month",
+      value: "30"
+    },
+    {
+      name: "Jobs Applied in one year",
+      value: "100"
+    }
+  ] : [];
+
   return (
     <>
       {authenticate && storedUser ? (
         <main>
           <Navbar />
 
-          <header className="relative isolate pt-16">
-            <div
-              className="absolute inset-0 -z-10 overflow-hidden"
-              aria-hidden="true"
-            >
-              <div className="absolute left-16 top-full -mt-16 transform-gpu opacity-50 blur-3xl xl:left-1/2 xl:-ml-80">
+          <header className="relative pt-14 sm:pt-16">
+            <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+              <div className="absolute -left-4 -top-16 -mt-16 transform-gpu opacity-50 blur-3xl sm:left-16 lg:left-1/2 lg:-ml-80">
                 <div
-                  className="aspect-[1154/678] w-[72.125rem] bg-gradient-to-br from-[#FF80B5] to-[#9089FC]"
+                  className="aspect-square w-48 h-48 sm:w-[36rem] sm:h-[20.25rem] lg:aspect-[1154/678] lg:w-[72.125rem] bg-gradient-to-br from-[#FF80B5] to-[#9089FC]"
                   style={{
-                    clipPath:
-                      "polygon(100% 38.5%, 82.6% 100%, 60.2% 37.7%, 52.4% 32.1%, 47.5% 41.8%, 45.2% 65.6%, 27.5% 23.4%, 0.1% 35.3%, 17.9% 0%, 27.7% 23.4%, 76.2% 2.5%, 74.2% 56%, 100% 38.5%)",
+                    clipPath: "polygon(100% 38.5%, 82.6% 100%, 60.2% 37.7%, 52.4% 32.1%, 47.5% 41.8%, 45.2% 65.6%, 27.5% 23.4%, 0.1% 35.3%, 17.9% 0%, 27.7% 23.4%, 76.2% 2.5%, 74.2% 56%, 100% 38.5%)",
                   }}
                 />
               </div>
               <div className="absolute inset-x-0 bottom-0 h-px bg-gray-900/5" />
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 text-left pt-3 pl-5">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight tracking-tight text-gray-900 text-left pt-3 pl-4 sm:pl-5">
                 Welcome
-                <span className="user-welcome-span">
-                  {" "}
+                <span className="ml-1 user-welcome-span">
                   {`${storedUser.name}`}
                 </span>
                 .
               </h1>
             </div>
           </header>
+
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-              <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-                {/* Invoice */}
-                <div className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16">
-                  <div className="bg-gray-900">
-                    <div className="mx-auto max-w-7xl">
-                      <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
-                        {stats.map((stat) => (
-                          <div
-                            key={stat.name}
-                            className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8"
-                          >
-                            <p className="text-sm font-medium leading-6 text-gray-400">
-                              {stat.name}
-                            </p>
-                            <p className="mt-2 flex items-baseline gap-x-2">
-                              <span className="text-4xl font-semibold tracking-tight text-white">
-                                {stat.value}
+            <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+              {/* Invoice */}
+              <div className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16">
+                <div className="bg-gray-900">
+                  <div className="mx-auto max-w-7xl">
+                    <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+                      {stats.map((stat) => (
+                        <div
+                          key={stat.name}
+                          className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8"
+                        >
+                          <p className="text-sm font-medium leading-6 text-gray-400">
+                            {stat.name}
+                          </p>
+                          <p className="mt-2 flex items-baseline gap-x-2">
+                            <span className="text-4xl font-semibold tracking-tight text-white">
+                              {stat.value}
+                            </span>
+                            {stat.unit ? (
+                              <span className="text-sm text-gray-400">
+                                {stat.unit}
                               </span>
-                              {stat.unit ? (
-                                <span className="text-sm text-gray-400">
-                                  {stat.unit}
-                                </span>
-                              ) : null}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
+                            ) : null}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="lg:col-start-3">
-                  <h2 className="text-sm font-semibold leading-6 text-gray-900">
-                    Recently Applied
-                  </h2>
-                  <HomeJobs />
-                </div>
+              <div className="lg:col-start-3">
+                <h2 className="text-sm font-semibold leading-6 text-gray-900">
+                  Recently Applied
+                </h2>
+                <HomeJobs />
               </div>
             </div>
+          </div>
         </main>
       ) : (
         <PageNotFound />
