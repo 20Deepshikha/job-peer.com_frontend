@@ -16,9 +16,11 @@ export default function Login() {
 
   async function HandleSubmit(e){
     e.preventDefault();
+    const currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const loginInfo = {
       'username': username,
-      'password': password
+      'password': password,
+      'timezone': currentTimezone
     }
 
     try{

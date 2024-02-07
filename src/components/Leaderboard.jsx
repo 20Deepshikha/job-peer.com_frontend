@@ -183,6 +183,24 @@ export default function Leaderboard() {
                                                     /> */}
                                                 </span>
                                             </th>
+                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                Job Applied In One Week
+                                                <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
+                                                    {/* <ChevronDownIcon
+                                                        className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
+                                                        aria-hidden="true"
+                                                    /> */}
+                                                </span>
+                                            </th>
+                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                Job Applied In One Month
+                                                <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
+                                                    {/* <ChevronDownIcon
+                                                        className="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
+                                                        aria-hidden="true"
+                                                    /> */}
+                                                </span>
+                                            </th>
                                             <th scope="col" className="relative py-3.5 pl-3 pr-0">
                                                 <span className="sr-only">Edit</span>
                                             </th>
@@ -198,10 +216,12 @@ export default function Leaderboard() {
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobs}</td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsHour}</td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsDay}</td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsWeek}</td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">{person.numberOfJobsMonth}</td>
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0 text-center">
                                                     <button
                                                         type="button"
-                                                        className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center"
+                                                        className="block rounded-md bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center"
                                                         onClick={() => handleUnAdd(person.username)}
                                                     >
                                                         Unadd Peer
@@ -242,7 +262,7 @@ export default function Leaderboard() {
                                     <Combobox onChange={(person) => (handleAdd)}>
                                         <Combobox.Input
                                             className="w-full rounded-md border-0 bg-gray-100 px-4 py-2.5 text-gray-900 focus:ring-0 sm:text-sm"
-                                            placeholder="Search..."
+                                            placeholder="Search For Your Peer by Username..."
                                             onChange={(event) => setQuery(event.target.value)}
                                         />
                                         {filteredPeople.map((person) => (
@@ -272,7 +292,7 @@ export default function Leaderboard() {
                                                         className="ml-4 inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                                         onClick={() => handleUnAdd(person.username)}
                                                     >
-                                                        Cancel Add Request
+                                                        Unadd Peer
                                                     </button>
                                                 )}
                                             </Combobox.Option>
