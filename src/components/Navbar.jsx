@@ -6,6 +6,7 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import { useParams, useNavigate } from "react-router-dom";
 import AddJobs from "./home/homeComponents/addJobs";
 import profilePic from "../assets/profile/profilePic.jpeg"
+import Notification from "./Notification";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -16,6 +17,7 @@ const Navbar = () => {
   const [addJob, setAddJob] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [storedUser, setStoredUser] = useState(null);
+  const [notification, setNotification] = useState(false);
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
@@ -70,6 +72,10 @@ const Navbar = () => {
     navigate("/");
     setOpen(false);
   };
+
+  const handleNotification = () =>{
+    setNotification(!notification);
+  }
 
   // const handleJobStats = () => {
   //   setLeaderboard(false);
@@ -167,6 +173,7 @@ const Navbar = () => {
                   <button
                     type="button"
                     className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    onClick={handleNotification}
                   >
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">View notifications</span>
@@ -301,6 +308,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   className="relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 no-underline"
+                  onClick={handleNotification}
                 >
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
@@ -336,6 +344,11 @@ const Navbar = () => {
           {addJob && (
             <div>
               <AddJobs handelAddJob={handelAddJob} />
+            </div>
+          )}
+          {notification && (
+            <div>
+              <Notification isOpen={notification} setIsOpen={setNotification}/>
             </div>
           )}
         </>

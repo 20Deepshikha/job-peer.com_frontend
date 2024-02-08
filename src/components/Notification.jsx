@@ -24,7 +24,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Example() {
+export default function Notification(isOpen, setIsOpen ) {
   const [open, setOpen] = useState(true);
   const [inviteNotification, setInviteNotification] = useState(true);
 
@@ -34,13 +34,13 @@ export default function Example() {
   };
 
   const handleDecline = () => {
-    // Handle Decline Logic
+    // Handle Decline Logi
     setInviteNotification(false);
   };
 
   return (
     <Fragment>
-      <Transition.Root show={open || inviteNotification} as={Fragment}>
+       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={() => setOpen(false)}>
           <div className="fixed inset-0" />
 
