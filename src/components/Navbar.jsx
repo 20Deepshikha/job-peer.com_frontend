@@ -15,7 +15,7 @@ function classNames(...classes) {
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
   const [addJob, setAddJob] = useState(false);
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [storedUser, setStoredUser] = useState(null);
   const [notification, setNotification] = useState(false);
 
@@ -70,10 +70,10 @@ const Navbar = () => {
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/");
-    setOpen(false);
+    setIsOpen(false);
   };
 
-  const handleNotification = () =>{
+  const handleNotification = () => {
     setNotification(!notification);
   }
 
@@ -277,7 +277,7 @@ const Navbar = () => {
                 Jobs
               </Disclosure.Button>
               <Disclosure.Button
-              onClick={handleLeaderboard} 
+                onClick={handleLeaderboard}
                 as="a"
                 href="#"
                 className={classNames(
@@ -347,9 +347,7 @@ const Navbar = () => {
             </div>
           )}
           {notification && (
-            <div>
-              <Notification isOpen={notification} setIsOpen={setNotification}/>
-            </div>
+            <Notification isOpen={notification} setIsOpen={setNotification} />
           )}
         </>
       )}
