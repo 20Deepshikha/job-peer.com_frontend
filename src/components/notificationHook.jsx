@@ -45,6 +45,7 @@ const useNotifications = (username) => {
     try {
       const response = await api.get(`/notifications/${username}`);
       setNotifications(response.data); // Assuming the API returns an array of notifications
+      console.log('notifications:', notifications)
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
     }

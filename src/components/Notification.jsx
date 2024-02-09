@@ -281,29 +281,43 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import useNotifications from './notificationHook';
+import { MdDeleteForever } from "react-icons/md";
+import api from '../config/axios'; // Ensure the import path is correct
 
-export default function Notification({isOpen, setIsOpen} ) {
+export default function Notification({ isOpen, setIsOpen }) {
   const [open, setOpen] = useState(true);
-  const [inviteNotification, setInviteNotification] = useState(true);
+  const username = JSON.parse(sessionStorage.getItem("User")).username;
 
-    const username = JSON.parse(sessionStorage.getItem("User")).username
+  const notifications = useNotifications(username);
 
-    const notifications = useNotifications(username);
-  
-    useEffect(() => {
-      if (notifications.length > 0) {
-        setOpen(true); // Open the notification panel if there are new notifications
-      }
-    }, [notifications, setOpen]);
+  useEffect(() => {
+    if (notifications.length > 0) {
+      setOpen(true); // Open the notification panel if there are new notifications
+    }
+  }, [notifications, setOpen]);
 
-  const handleAccept = () => {
-    // Handle Accept Logic
-    setInviteNotification(false);
+  const handleAccept = async(id, sender) => {
+    // Implement the logic to accept the notification here
+    // Optionally, delete the notification from the backend
+    await api.put(`/peerFollowed/${sender}/${username}`)
+    console.log(`Accepted notification with ID: ${id}`);
+    await api.delete(`/deleteNotification/${id}`);
   };
 
-  const handleDecline = () => {
-    // Handle Decline Logi
-    setInviteNotification(false);
+  const handleDecline = async(id, sender) => {
+    // Implement the logic to decline the notification here
+    // Optionally, delete the notification from the backend
+    await api.delete(`/peerUnFollow/${sender}/${username}`)
+    await api.delete(`/deleteNotification/${id}`);
+    console.log(`Declined notification with ID: ${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    // Implement the logic to delete the notification from the backend
+    console.log(`Deleting notification with ID: ${id}`);
+    // Example API call to delete the notification
+    await api.delete(`/deleteNotification/${id}`);
+    // Refresh notifications list or remove the notification from the state
   };
 
   return (
@@ -344,21 +358,27 @@ export default function Notification({isOpen, setIsOpen} ) {
                       <div className="flex-1 px-4 py-6 sm:px-6">
                         {/* Dynamically render notifications */}
                         {notifications.map((notification, index) => (
-                          <div key={index} className="p-4 mb-4 rounded-lg bg-gray-100">
+                          <div key={index} className="p-4 mb-4 rounded-lg bg-gray-100 relative">
+                            <button
+                              onClick={() => handleDelete(notification.id)}
+                              className="absolute top-0 right-0 p-2"
+                            >
+                              <MdDeleteForever className="text-2xl text-red-500" />
+                            </button>
                             <div className="flex justify-between items-center">
                               <p className="text-sm font-medium text-gray-900">{notification.message}</p>
                               <div className="mt-4 flex">
                                 <button
                                   type="button"
                                   className="mr-2 inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                                  onClick={() => handleAccept(notification.id)}
+                                  onClick={() => handleAccept(notification.id, notification.sender)}
                                 >
                                   Accept
                                 </button>
                                 <button
                                   type="button"
                                   className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                  onClick={() => handleDecline(notification.id)}
+                                  onClick={() => handleDecline(notification.id, notification.sender)}
                                 >
                                   Decline
                                 </button>
