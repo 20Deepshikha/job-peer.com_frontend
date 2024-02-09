@@ -7,7 +7,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import AddJobs from "./home/homeComponents/addJobs";
 import profilePic from "../assets/profile/profilePic.jpeg"
 import Notification from "./Notification";
-
+import api from "../config/axios";
+import io from 'socket.io-client'
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -18,6 +19,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [storedUser, setStoredUser] = useState(null);
   const [notification, setNotification] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
@@ -47,6 +49,37 @@ const Navbar = () => {
     }
   }, [username]);
 
+  useEffect(() => {
+    // Fetch initial notification count on mount
+    const fetchNotificationCount = async () => {
+      try {
+        const response = await api.get(`/notifications/count/${username}`);
+        setNotificationCount(response.data.count);
+      } catch (error) {
+        console.error("Failed to fetch notification count", error);
+      }
+    };
+
+    fetchNotificationCount();
+
+    // Setup socket listener for real-time updates
+    const socket = io('http://localhost:8000', { withCredentials: true });
+
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server for notification count updates');
+      socket.emit('join', username); 
+    });
+
+    socket.on('notificationCountUpdate', (data) => {
+      setNotificationCount(data.count);
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('notificationCountUpdate');
+      socket.disconnect(); // Clean up the connection when the component unmounts
+    };
+  }, [username]);
   const handleJobs = () => {
     handleLinkClick("jobs"); // First update the active link
     console.log("activeLink after updating:", activeLink);
@@ -178,6 +211,11 @@ const Navbar = () => {
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">View notifications</span>
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    {notificationCount > 0 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center h-4 w-4 text-xs font-bold text-white bg-red-500 rounded-full">
+                    {notificationCount}
+                  </span>
+                )}
                   </button>
 
                   {/* Profile dropdown */}
