@@ -24,9 +24,9 @@ export default function Notification({ isOpen, setIsOpen }) {
     // Implement the logic to accept the notification here
     // Optionally, delete the notification from the backend
     await api.put(`/peerFollowed/${sender}/${username}`)
+    setNotifications(notifications.filter(notification => notification.id !== id));
     console.log(`Accepted notification with ID: ${id}`);
     await api.delete(`/deleteNotification/${id}`);
-    setNotifications(notifications.filter(notification => notification.id !== id));
 
   };
 
@@ -34,18 +34,19 @@ export default function Notification({ isOpen, setIsOpen }) {
     // Implement the logic to decline the notification here
     // Optionally, delete the notification from the backend
     await api.delete(`/peerUnFollow/${sender}/${username}`)
+    setNotifications(notifications.filter(notification => notification.id !== id));
     await api.delete(`/deleteNotification/${id}`);
     console.log(`Declined notification with ID: ${id}`);
-    setNotifications(notifications.filter(notification => notification.id !== id));
 
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, sender) => {
     // Implement the logic to delete the notification from the backend
     console.log(`Deleting notification with ID: ${id}`);
     // Example API call to delete the notification
-    await api.delete(`/deleteNotification/${id}`);
     setNotifications(notifications.filter(notification => notification.id !== id));
+    await api.delete(`/deleteNotification/${id}`);
+    await api.delete(`/peerUnFollow/${sender}/${username}`)
 
     // Refresh notifications list or remove the notification from the state
   };
@@ -90,7 +91,7 @@ export default function Notification({ isOpen, setIsOpen }) {
                         {notifications.map((notification, index) => (
                           <div key={index} className="p-4 mb-4 rounded-lg bg-gray-100 relative">
                             <button
-                              onClick={() => handleDelete(notification.id)}
+                              onClick={() => handleDelete(notification.id, notification.sender)}
                               className="absolute top-0 right-0 p-2"
                             >
                               <MdDeleteForever className="text-2xl text-red-500" />
