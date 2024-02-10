@@ -12,6 +12,7 @@ import Navbar from "./Navbar";
 import SearchUser from "./home/homeComponents/searchUser";
 import PageNotFound from "./NotFound";
 import { Dialog, Listbox, Menu, Transition } from "@headlessui/react";
+import api from "../config/axios";
 
 import {
   Bars3Icon,
@@ -108,6 +109,7 @@ export default function Home() {
   const [authenticate, setAuthenticate] = useState(false);
   // const [home, setHome] = useState(true);
   const [addJob, setAddJob] = useState(false);
+  const [userLeaderboard, setUserLeaderboard] = useState();
   // const [viewAllJobs, setViewAllJobs] = useState(false);
   // const [jobStats, setJobStats] = useState(true);
   // const [appStats, setAppStats] = useState(false);
@@ -141,6 +143,28 @@ export default function Home() {
       }
     }
   }, [storedUser, username, navigate]); // Include `navigate` in dependencies
+
+  useEffect(() => {
+    const fetchUserLeaderboard = async () => {
+      try {
+        const userCheckStr = sessionStorage.getItem("User");
+        if (userCheckStr) {
+          const userCheck = JSON.parse(userCheckStr);
+          setStoredUser(userCheck);
+          const response = await api.get(`/leaderboardUser/${userCheck.username}`);
+          setUserLeaderboard(response.data);
+          console.log('Leaderboard details:', response.data);
+        } else {
+          console.log("Nothing in Storage");
+        }
+      } catch (error) {
+        console.error('Error fetching user leaderboard:', error);
+      }
+    };
+  
+    fetchUserLeaderboard();
+  }, []); 
+  
 
   // useEffect(()=>{
   //   const getLeaderBoard = async()=>{
@@ -179,39 +203,35 @@ export default function Home() {
   //   setLeaderboard(true);
   // };
 
-  const stats = storedUser ? [
+
+  const stats = storedUser && userLeaderboard ? [
     {
-      name: "User Name",
-      value: storedUser.username,
-    },
-    {
-      name: "Total Jobs Applied",
-      value: "405",
+      name: `Total Jobs Applied by ${storedUser.username}` ,
+      value: userLeaderboard.numberOfJobs,
     },
     {
       name: "Jobs Applied in one hour",
-      value: "3.65",
-      unit: "mins",
+      value: userLeaderboard.numberOfJobsHour,
     },
     {
       name: "Jobs applied in six hours",
-      value: "3",
+      value: userLeaderboard.numberOfJobsSixHours,
     },
     {
       name: "Jobs Applied in one day",
-      value: "98.5%",
+      value: userLeaderboard.numberOfJobsDay,
     },
     {
       name: "Jobs Applied in one week",
-      value: "10"
+      value: userLeaderboard.numberOfJobsWeek
     },
     {
       name: "Jobs Applied in one month",
-      value: "30"
+      value: userLeaderboard.numberOfJobsMonth
     },
     {
       name: "Jobs Applied in one year",
-      value: "100"
+      value: userLeaderboard.numberOfJobsYear
     }
   ] : [];
 
