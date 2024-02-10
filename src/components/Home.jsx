@@ -13,6 +13,7 @@ import SearchUser from "./home/homeComponents/searchUser";
 import PageNotFound from "./NotFound";
 import { Dialog, Listbox, Menu, Transition } from "@headlessui/react";
 import api from "../config/axios";
+import './Home.css'
 
 import {
   Bars3Icon,
@@ -111,8 +112,8 @@ export default function Home() {
   const [addJob, setAddJob] = useState(false);
   const [userLeaderboard, setUserLeaderboard] = useState();
   // const [viewAllJobs, setViewAllJobs] = useState(false);
-  // const [jobStats, setJobStats] = useState(true);
-  // const [appStats, setAppStats] = useState(false);
+  const [jobStats, setJobStats] = useState(true);
+  const [appStats, setAppStats] = useState(false);
   // const [leaderboard, setLeaderboard] = useState(false);
 
   useEffect(() => {
@@ -161,10 +162,10 @@ export default function Home() {
         console.error('Error fetching user leaderboard:', error);
       }
     };
-  
+
     fetchUserLeaderboard();
-  }, []); 
-  
+  }, []);
+
 
   // useEffect(()=>{
   //   const getLeaderBoard = async()=>{
@@ -185,17 +186,15 @@ export default function Home() {
   //   setOpen(false);
   // };
 
-  // const handleJobStats = () => {
-  //   setLeaderboard(false);
-  //   setAppStats(false);
-  //   setJobStats(true);
-  // };
+  const handleJobStats = () => {
+    setAppStats(false);
+    setJobStats(true);
+  };
 
-  // const handleAppStats = () => {
-  //   setLeaderboard(false);
-  //   setAppStats(true);
-  //   setJobStats(false);
-  // };
+  const handleAppStats = () => {
+    setAppStats(true);
+    setJobStats(false);
+  };
 
   // const handleLeaderboard = () => {
   //   setAppStats(false);
@@ -206,7 +205,7 @@ export default function Home() {
 
   const stats = storedUser && userLeaderboard ? [
     {
-      name: `Total Jobs Applied by ${storedUser.username}` ,
+      name: `Total Jobs Applied by ${storedUser.username}`,
       value: userLeaderboard.numberOfJobs,
     },
     {
@@ -302,6 +301,18 @@ export default function Home() {
               </div>
             </div>
           </div>
+          <div className='wrapper'>
+              <div className='charts-container'>
+                {/* {jobStats && <div className='bar-chart-container'>
+                  <JobStatsBarChart />
+                </div>}
+                {appStats && <div className='pie-chart-container'>
+                  <Piechar />
+                </div>} */}
+                  <div className="bar-chart-container"> <JobStatsBarChart /> </div>
+                  <div className="pie-chart-container"><Piechar /></div>
+              </div>
+            </div>
         </main>
       ) : (
         <PageNotFound />
