@@ -20,17 +20,19 @@ export default function Notification({ isOpen, setIsOpen }) {
     }
   }, [fetchedNotifications]);
 
-  const handleAccept = async(id, sender) => {
+  const handleAccept = async (id, sender) => {
     // Implement the logic to accept the notification here
     // Optionally, delete the notification from the backend
     await api.put(`/peerFollowed/${sender}/${username}`)
     setNotifications(notifications.filter(notification => notification.id !== id));
+    window.location.reload();
     console.log(`Accepted notification with ID: ${id}`);
     await api.delete(`/deleteNotification/${id}`);
+    window.location.reload()
 
   };
 
-  const handleDecline = async(id, sender) => {
+  const handleDecline = async (id, sender) => {
     // Implement the logic to decline the notification here
     // Optionally, delete the notification from the backend
     await api.delete(`/peerUnFollow/${sender}/${username}`)
@@ -98,22 +100,24 @@ export default function Notification({ isOpen, setIsOpen }) {
                             </button>
                             <div className="flex justify-between items-center">
                               <p className="text-sm font-medium text-gray-900">{notification.message}</p>
-                              <div className="mt-4 flex">
-                                <button
-                                  type="button"
-                                  className="mr-2 inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                                  onClick={() => handleAccept(notification.id, notification.sender)}
-                                >
-                                  Accept
-                                </button>
-                                <button
-                                  type="button"
-                                  className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                  onClick={() => handleDecline(notification.id, notification.sender)}
-                                >
-                                  Decline
-                                </button>
-                              </div>
+                              {notification.status === 'requestNoti' && (
+                                <div className="mt-4 flex">
+                                  <button
+                                    type="button"
+                                    className="mr-2 inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                                    onClick={() => handleAccept(notification.id, notification.sender)}
+                                  >
+                                    Accept
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onClick={() => handleDecline(notification.id, notification.sender)}
+                                  >
+                                    Decline
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}
