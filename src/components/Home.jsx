@@ -35,69 +35,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
-const navigation = [
-  {
-    name: "Home",
-    href: "#",
-  },
-  {
-    name: "Invoices",
-    href: "#",
-  },
-  {
-    name: "Clients",
-    href: "#",
-  },
-  {
-    name: "Expenses",
-    href: "#",
-  },
-];
-
-const moods = [
-  {
-    name: "Excited",
-    value: "excited",
-    icon: FireIcon,
-    iconColor: "text-white",
-    bgColor: "bg-red-500",
-  },
-  {
-    name: "Loved",
-    value: "loved",
-    icon: HeartIcon,
-    iconColor: "text-white",
-    bgColor: "bg-pink-400",
-  },
-  {
-    name: "Happy",
-    value: "happy",
-    icon: FaceSmileIcon,
-    iconColor: "text-white",
-    bgColor: "bg-green-400",
-  },
-  {
-    name: "Sad",
-    value: "sad",
-    icon: FaceFrownIcon,
-    iconColor: "text-white",
-    bgColor: "bg-yellow-400",
-  },
-  {
-    name: "Thumbsy",
-    value: "thumbsy",
-    icon: HandThumbUpIcon,
-    iconColor: "text-white",
-    bgColor: "bg-blue-500",
-  },
-  {
-    name: "I feel nothing",
-    value: null,
-    icon: XMarkIconMini,
-    iconColor: "text-gray-400",
-    bgColor: "bg-transparent",
-  },
-];
 
 export default function Home() {
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -114,6 +51,7 @@ export default function Home() {
   // const [viewAllJobs, setViewAllJobs] = useState(false);
   const [jobStats, setJobStats] = useState(true);
   const [appStats, setAppStats] = useState(false);
+  const [peerCount, setPeerCount] = useState();
   // const [leaderboard, setLeaderboard] = useState(false);
 
   useEffect(() => {
@@ -153,7 +91,9 @@ export default function Home() {
           const userCheck = JSON.parse(userCheckStr);
           setStoredUser(userCheck);
           const response = await api.get(`/leaderboardUser/${userCheck.username}`);
+          const countPeer = await api.get(`/peerCount/${userCheck.username}`)
           setUserLeaderboard(response.data);
+          setPeerCount(countPeer.data);
           console.log('Leaderboard details:', response.data);
         } else {
           console.log("Nothing in Storage");
@@ -231,6 +171,10 @@ export default function Home() {
     {
       name: "Jobs Applied in one year",
       value: userLeaderboard.numberOfJobsYear
+    },
+    {
+      name: "Peers Added In Peerboard",
+      value: peerCount.peerCount
     }
   ] : [];
 
