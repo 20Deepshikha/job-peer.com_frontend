@@ -78,7 +78,7 @@ function JobStatsBarChart() {
 
     return (
         <div>
-            <h2>Job Application Stats</h2>
+            <h2>Job Applied Statistics</h2>
             <select onChange={handleTimeFrameChange} value={timeFrame}>
                 <option value="week">Week</option>
                 <option value="month">Month</option>

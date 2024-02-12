@@ -264,14 +264,14 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
               {/* Invoice */}
-              <div className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16">
+              <div className="-mx-4 px-2 py-2 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16">
                 <div className="bg-gray-900">
                   <div className="mx-auto max-w-7xl">
                     <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
                       {stats.map((stat) => (
                         <div
                           key={stat.name}
-                          className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8"
+                          className="bg-gray-700 px-4 py-6 sm:px-6 lg:px-8"
                         >
                           <p className="text-sm font-medium leading-6 text-gray-400">
                             {stat.name}
@@ -301,18 +301,36 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className='wrapper'>
-              <div className='charts-container'>
-                {/* {jobStats && <div className='bar-chart-container'>
+          {/* <div className='wrapper'>
+            <div className='charts-container'>
+              {jobStats && <div className='bar-chart-container'>
                   <JobStatsBarChart />
                 </div>}
                 {appStats && <div className='pie-chart-container'>
                   <Piechar />
-                </div>} */}
-                  <div className="bar-chart-container"> <JobStatsBarChart /> </div>
-                  <div className="pie-chart-container"><Piechar /></div>
-              </div>
+                </div>} 
+              <div className="bar-chart-container"> <JobStatsBarChart /> </div>
+              <div className="pie-chart-container"><Piechar /></div>
             </div>
+          </div> */}
+          <div>
+            <h3 className="text-base font-semibold leading-6 text-gray-900 px-5">Last 30 days</h3>
+            <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 py-4 px-8">
+              <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                <dt className="truncate text-sm font-medium text-gray-500">
+                </dt>
+                <dd className="mt-1 tracking-tight text-gray-900">
+                  <div className="bar-chart-container"> <JobStatsBarChart /> </div>
+                </dd>
+              </div>
+              <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                <dt className="truncate text-sm font-medium text-gray-500"></dt>
+                <dd className="mt-1  tracking-tight text-gray-900">
+                  <div className="pie-chart-container"><Piechar /></div>
+                </dd>
+              </div>
+            </dl>
+          </div>
         </main>
       ) : (
         <PageNotFound />

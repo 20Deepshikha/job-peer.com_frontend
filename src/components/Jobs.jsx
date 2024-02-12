@@ -9,6 +9,7 @@ import PageNotFound from "./NotFound";
 import ShowDetails from "./home/homeComponents/ShowDetails";
 import { IoSearch } from "react-icons/io5";
 
+
 export default function ViewAllJobs() {
   const [jobs, setJobs] = useState([]);
   const [showJobCards, setShowJobCards] = useState(true);
@@ -282,7 +283,7 @@ export default function ViewAllJobs() {
               filteredJobs.map((person) => (
                 <li
                   key={person.id}
-                  className="col-span-1 divide-y divide-gray-200 rounded-lg bg-gray-100 shadow"
+                  className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
                 >
                   <div className="flex w-full items-center justify-between space-x-6 p-6">
                     <div className="flex-1 truncate">
