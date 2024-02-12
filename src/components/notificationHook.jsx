@@ -41,7 +41,7 @@ import api from '../config/axios';
 // const socket = io('job-peer.onrender.com', { withCredentials: true });
 const socket = io('https://job-peer.onrender.com', {
   withCredentials: true,
-  transports: ['websocket', 'polling'] 
+  transports: ['websocket']
 });
 
 const useNotifications = (username) => {
