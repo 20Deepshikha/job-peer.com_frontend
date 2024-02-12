@@ -60,7 +60,7 @@ function JobStatsBarChart() {
                   x: {
                     title: {
                       display: true,
-                      text: 'Date'
+                      text: 'Timeframe'
                     }
                   },
                   y: {

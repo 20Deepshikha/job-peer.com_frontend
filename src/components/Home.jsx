@@ -301,21 +301,8 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {/* <div className='wrapper'>
-            <div className='charts-container'>
-              {jobStats && <div className='bar-chart-container'>
-                  <JobStatsBarChart />
-                </div>}
-                {appStats && <div className='pie-chart-container'>
-                  <Piechar />
-                </div>} 
-              <div className="bar-chart-container"> <JobStatsBarChart /> </div>
-              <div className="pie-chart-container"><Piechar /></div>
-            </div>
-          </div> */}
           <div>
-            <h3 className="text-base font-semibold leading-6 text-gray-900 px-5">Last 30 days</h3>
-            <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 py-4 px-8">
+            <dl className=" grid grid-cols-1 gap-5 sm:grid-cols-2 py-4 px-8">
               <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
                 <dt className="truncate text-sm font-medium text-gray-500">
                 </dt>
