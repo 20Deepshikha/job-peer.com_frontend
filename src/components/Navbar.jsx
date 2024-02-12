@@ -189,7 +189,7 @@ const Navbar = () => {
                         : "hover:border-gray-300 hover:text-gray-700"
                     )}
                   >
-                    Leaderboard
+                    Peerboard
                   </a>
                 </div>
               </div>
@@ -325,7 +325,7 @@ const Navbar = () => {
                   activeLink === "leaderboard" ? "border-l-4 border-indigo-500 bg-indigo-50 text-indigo-700" : "border-l-4 border-transparent text-gray-500",
                   "hover:border-gray-300 hover:text-gray-700"
                 )}>
-                Leaderboard
+                Peerboard
               </Disclosure.Button>
             </div>
             <div className="border-t border-gray-200 pb-3 pt-4 no-underline">
