@@ -79,7 +79,7 @@ const Navbar = () => {
     return () => {
       socket.off('connect');
       socket.off('notificationCountUpdate');
-      socket.disconnect(); // Clean up the connection when the component unmounts
+      socket.disconnect(); 
     };
   }, [username]);
   const handleJobs = () => {
@@ -353,6 +353,11 @@ const Navbar = () => {
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  {notificationCount > 0 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center h-4 w-4 text-xs font-bold text-white bg-red-500 rounded-full">
+                    {notificationCount}
+                  </span>
+                )}
                 </button>
               </div>
               <div className="mt-3 space-y-1">
