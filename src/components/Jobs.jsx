@@ -282,7 +282,7 @@ export default function ViewAllJobs() {
               filteredJobs.map((person) => (
                 <li
                   key={person.id}
-                  className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
+                  className="col-span-1 divide-y divide-gray-200 rounded-lg bg-gray-100 shadow"
                 >
                   <div className="flex w-full items-center justify-between space-x-6 p-6">
                     <div className="flex-1 truncate">
