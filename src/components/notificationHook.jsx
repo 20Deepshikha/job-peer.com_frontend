@@ -37,7 +37,8 @@ import io from 'socket.io-client';
 import api from '../config/axios';
 
 // const socket = io('http://localhost:8000', { withCredentials: true });
-const socket = io('https://job-peer.onrender.com', { withCredentials: true });
+// const socket = io('https://job-peer.onrender.com', { withCredentials: true });
+const socket = io('job-peer.onrender.com:10000', { withCredentials: true });
 
 const useNotifications = (username) => {
   const [notifications, setNotifications] = useState([]);
