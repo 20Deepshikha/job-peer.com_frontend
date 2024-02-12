@@ -63,8 +63,10 @@ const Navbar = () => {
     fetchNotificationCount();
 
     // Setup socket listener for real-time updates
-    const socket = io('http://localhost:8000', { withCredentials: true });
-
+    const socket = io('https://job-peer.onrender.com', {
+      withCredentials: true,
+      transports: ['websocket']
+    });
     socket.on('connect', () => {
       console.log('Connected to WebSocket server for notification count updates');
       socket.emit('join', username); 
