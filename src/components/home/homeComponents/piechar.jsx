@@ -44,7 +44,7 @@ function PieChart() {
 
     return (
         <div>
-            <h2>Job Application Status</h2>
+            <h2>Application Status Statistics</h2>
             {jobStats == null ? (
                 <p>Loading...</p> // Show a loading message or spinner
             ) : areAllStatsZero ? (

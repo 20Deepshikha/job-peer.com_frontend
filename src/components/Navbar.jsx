@@ -9,6 +9,8 @@ import profilePic from "../assets/profile/profilePic.jpeg"
 import Notification from "./Notification";
 import api from "../config/axios";
 import io from 'socket.io-client'
+import logo from '../../src/assets/J.png'
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -63,8 +65,10 @@ const Navbar = () => {
     fetchNotificationCount();
 
     // Setup socket listener for real-time updates
-    const socket = io('http://localhost:8000', { withCredentials: true });
-
+    const socket = io('https://job-peer.onrender.com', {
+      withCredentials: true,
+      transports: ['websocket']
+    });
     socket.on('connect', () => {
       console.log('Connected to WebSocket server for notification count updates');
       socket.emit('join', username); 
@@ -77,7 +81,7 @@ const Navbar = () => {
     return () => {
       socket.off('connect');
       socket.off('notificationCountUpdate');
-      socket.disconnect(); // Clean up the connection when the component unmounts
+      socket.disconnect(); 
     };
   }, [username]);
   const handleJobs = () => {
@@ -149,9 +153,9 @@ const Navbar = () => {
                     to="/home"
                   >
                     <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                      alt="Your Company"
+                      className="h-10 w-auto"
+                      src={logo}
+                      alt="Job-Peer Logo"
                     />
                   </a>
                 </div>
@@ -187,7 +191,7 @@ const Navbar = () => {
                         : "hover:border-gray-300 hover:text-gray-700"
                     )}
                   >
-                    Leaderboard
+                    Peerboard
                   </a>
                 </div>
               </div>
@@ -241,7 +245,7 @@ const Navbar = () => {
                       leaveTo="transform opacity-0 scale-95"
                     >
                       <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
+                        {/* <Menu.Item>
                           {({ active }) => (
                             <a
                               href="#"
@@ -266,7 +270,7 @@ const Navbar = () => {
                               Settings
                             </a>
                           )}
-                        </Menu.Item>
+                        </Menu.Item> */}
                         <Menu.Item>
                           {({ active }) => (
                             <a
@@ -323,7 +327,7 @@ const Navbar = () => {
                   activeLink === "leaderboard" ? "border-l-4 border-indigo-500 bg-indigo-50 text-indigo-700" : "border-l-4 border-transparent text-gray-500",
                   "hover:border-gray-300 hover:text-gray-700"
                 )}>
-                Leaderboard
+                Peerboard
               </Disclosure.Button>
             </div>
             <div className="border-t border-gray-200 pb-3 pt-4 no-underline">
@@ -351,23 +355,28 @@ const Navbar = () => {
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  {notificationCount > 0 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center h-4 w-4 text-xs font-bold text-white bg-red-500 rounded-full">
+                    {notificationCount}
+                  </span>
+                )}
                 </button>
               </div>
               <div className="mt-3 space-y-1">
-                <Disclosure.Button
+                {/* <Disclosure.Button
                   as="a"
                   href="#"
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6 no-underline"
                 >
                   Your Profile
-                </Disclosure.Button>
-                <Disclosure.Button
+                </Disclosure.Button> */}
+                {/* <Disclosure.Button
                   as="a"
                   href="#"
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6 no-underline"
                 >
                   Settings
-                </Disclosure.Button>
+                </Disclosure.Button> */}
                 <Disclosure.Button
                   onClick={handleLogout}
                   as="a"

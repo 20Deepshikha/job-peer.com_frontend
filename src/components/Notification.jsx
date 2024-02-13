@@ -25,10 +25,10 @@ export default function Notification({ isOpen, setIsOpen }) {
     // Optionally, delete the notification from the backend
     await api.put(`/peerFollowed/${sender}/${username}`)
     setNotifications(notifications.filter(notification => notification.id !== id));
-    window.location.reload();
+    // window.location.reload();
     console.log(`Accepted notification with ID: ${id}`);
     await api.delete(`/deleteNotification/${id}`);
-    window.location.reload()
+    // window.location.reload()
 
   };
 

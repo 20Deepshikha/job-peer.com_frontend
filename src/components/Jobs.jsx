@@ -9,6 +9,7 @@ import PageNotFound from "./NotFound";
 import ShowDetails from "./home/homeComponents/ShowDetails";
 import { IoSearch } from "react-icons/io5";
 
+
 export default function ViewAllJobs() {
   const [jobs, setJobs] = useState([]);
   const [showJobCards, setShowJobCards] = useState(true);
