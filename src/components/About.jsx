@@ -305,7 +305,7 @@ export default function About() {
                 <h2 className="text-base font-bold leading-7 text-gray-900">Our Website Features.</h2>
                 <p className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">Everything You need to Know!</p>
                 <p className="mt-6 text-lg leading-8 text-gray-700">
-                  These are some of the intersting features e have added in our Job Peer Website.
+                  These are some of the intersting features We have added in our Job Peer Website.
                 </p>
               </div>
             </div>
@@ -373,7 +373,7 @@ export default function About() {
             <div className="mx-auto max-w-2xl lg:mx-0">
               <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Our team</h2>
               <p className="mt-6 text-lg leading-8 text-gray-800">
-                Meet the talented minds driving Job Tracking Pro – a dedicated team committed to shaping your career journey and success.
+                Meet the talented minds driving Job Peer – a dedicated team committed to shaping your career journey and success.
               </p>
             </div>
             <ul
