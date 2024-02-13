@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import api from '../config/axios'
 import { useNavigate } from 'react-router-dom';
-
+import logo from '../../src/assets/J.png'
 
 export default function Signup() {
     const [status, setStatus] = useState(null);
@@ -50,12 +50,12 @@ export default function Signup() {
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img
               className="mx-auto h-10 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Your Company"
+              src={logo}
+              alt="Company logo"
             />
-            <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            {/* <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
               Sign Up
-            </h2>
+            </h2> */}
           </div>
   
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
@@ -180,7 +180,7 @@ export default function Signup() {
   
             <p className="mt-10 text-center text-sm text-gray-500">
               Already a member?{' '}
-              <a onClick={()=>navigate('/')} style={{ textDecoration: 'none', cursor: 'pointer' }} href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+              <a onClick={()=>navigate('/login')} style={{ textDecoration: 'none', cursor: 'pointer' }} href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                 Sign In
               </a>
             </p>

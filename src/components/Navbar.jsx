@@ -9,6 +9,8 @@ import profilePic from "../assets/profile/profilePic.jpeg"
 import Notification from "./Notification";
 import api from "../config/axios";
 import io from 'socket.io-client'
+import logo from '../../src/assets/J.png'
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -152,8 +154,8 @@ const Navbar = () => {
                   >
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                      alt="Your Company"
+                      src={logo}
+                      alt="Job-Peer Logo"
                     />
                   </a>
                 </div>
