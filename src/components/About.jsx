@@ -5,6 +5,7 @@ import Ayush from '../../src/assets/Ayush.jpeg'
 import Deep2 from '../../src/assets/Deep2.jpeg'
 import Kushank from '../../src/assets/Kushank.jpeg'
 import Logo from '../../src/assets/J.png'
+import Logo1 from '../../src/assets/Jwhite.png'
 import AppImg from '../../src/assets/AppFeatures1.png'
 import emailjs from 'emailjs-com';
 import { useNavigate } from "react-router-dom";
@@ -160,7 +161,7 @@ export default function About() {
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <img
-                className="h-8 w-auto"
+                className="h-20 w-auto"
                 src={Logo}
                 alt="Logo"
               />
@@ -196,8 +197,8 @@ export default function About() {
               <a href="#" className="-m-1.5 p-1.5">
                 <span className="sr-only">Your Company</span>
                 <img
-                  className="h-8 w-auto"
-                  src={Logo}
+                  className="h-20 w-auto"
+                  src={Logo1}
                   alt=""
                 />
               </a>
@@ -402,7 +403,7 @@ export default function About() {
           <div className="xl:grid xl:grid-cols-13 xl:gap-8">
             <div className="space-y-8">
               <img
-                className="h-10"
+                className="h-20"
                 src={Logo}
                 alt="Company name"
               />
