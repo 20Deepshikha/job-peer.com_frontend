@@ -153,7 +153,7 @@ const Navbar = () => {
                     to="/home"
                   >
                     <img
-                      className="h-8 w-auto"
+                      className="h-20 w-auto"
                       src={logo}
                       alt="Job-Peer Logo"
                     />
