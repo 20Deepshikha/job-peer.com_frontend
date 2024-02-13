@@ -8,13 +8,14 @@ import Leaderboard from './components/Leaderboard';
 import PageNotFound from './components/NotFound';
 import ViewAllJobs from './components/Jobs';
 import './App.css'
+import About from './components/About';
 
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Login/>}/>
+        <Route path='/' element={<About/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/home/:username' element={<Home/>}/>
