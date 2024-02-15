@@ -52,7 +52,8 @@ export default function Login() {
         'username':  result.user.email.split('@')[0],
         'name': result.user.displayName,
         'email': result.user.email,
-        'password': result._tokenResponse.localId
+        'password': result._tokenResponse.localId,
+        'timezone': currentTimezone
       }
       console.log(responseGoogle)
       try{
