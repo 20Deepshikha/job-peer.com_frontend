@@ -164,6 +164,7 @@ export default function About() {
                 className="h-20 w-auto"
                 src={Logo}
                 alt="Logo"
+                onClick={()=>navigate('/login')}
               />
             </a>
           </div>
@@ -200,6 +201,7 @@ export default function About() {
                   className="h-20 w-auto"
                   src={Logo1}
                   alt=""
+                  onClick={()=>navigate('/login')}
                 />
               </a>
               <button
@@ -341,6 +343,13 @@ export default function About() {
                     </dd>
                   </div>
                 ))}
+                <button
+                    type="submit"
+                    className="w-full flex items-center justify-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-900 hover:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring focus:ring-indigo-900 active:bg-indigo-900"
+                    onClick={()=>navigate('/signup')}
+                  >
+                    Check out Job-Peer.com 
+                  </button>
               </dl>
             </div>
           </div>
@@ -406,6 +415,7 @@ export default function About() {
                 className="h-20"
                 src={Logo}
                 alt="Company name"
+                onClick={()=>navigate('/login')}
               />
               {/* <p className="text-sm leading-6 text-indigo-800">
           Discover the full experience on our website and share your valuable feedback with us. We trust you'll find our application a delight to use for your daily job applications. Explore, connect, and enjoy your journey with Job Peer!
@@ -487,3 +497,4 @@ export default function About() {
     </div>
   )
 }
+
