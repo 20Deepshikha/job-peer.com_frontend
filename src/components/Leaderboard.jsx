@@ -272,7 +272,7 @@ export default function Leaderboard() {
                                                 {!addClick[person.username] ? (
                                                     <button
                                                         type="button"
-                                                        className="ml-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                        className="ml-4 inline-flex items-center rounded-md bg-red-600 px-2 py-2 text-xs sm:text-xs md:text-xs font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                                         onClick={() => handleAdd(person)}
                                                     >
                                                         Add Peer
