@@ -185,7 +185,7 @@ export default function About() {
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <span className="text-sm font-semibold leading-6 text-gray hover:text-black cursor-pointer" onClick={handleLogin}>
+            <span className="text-md font-semibold leading-6 text-gray hover:text-black cursor-pointer" onClick={handleLogin}>
               Log in <span classname="hover:ml-3" aria-hidden="true">&rarr;</span>
             </span>
           </div>
