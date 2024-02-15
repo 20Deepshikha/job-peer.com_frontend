@@ -267,8 +267,8 @@ export default function Leaderboard() {
                                                     )
                                                 }
                                             >
-                                                <span>{person.name}</span>
-                                                <span>@{person.username}</span>
+                                                <span >{person.name}</span>
+                                                <span style={{wordBreak:'break-all', marginLeft:'10px'}}>@{person.username}</span>
                                                 {!addClick[person.username] ? (
                                                     <button
                                                         type="button"
