@@ -55,7 +55,7 @@ export default function Login() {
         'password': result._tokenResponse.localId,
         'timezone': currentTimezone
       }
-      console.log(responseGoogle)
+      console.log(responseGoogle.timezone)
       try{
         const createUser = await api.post('/register', responseGoogle);
         setStatus(true);
@@ -63,6 +63,11 @@ export default function Login() {
         console.log('user created successfully, Status: ', createUser.status);
       }
       catch{
+        // console.log('Inside Catch')
+        // console.log(responseGoogle.timezone)
+        const login = await api.post('/login', responseGoogle);
+        sessionStorage.setItem('User', JSON.stringify(login.data));
+        console.log('successfully logged in', login);
         setStatus(true);
         console.log(status);
       }
