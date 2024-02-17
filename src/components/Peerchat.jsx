@@ -50,26 +50,26 @@ export default function Peerchat() {
       <Navbar />
       <div className="flex flex-1">
         {/* Sidebar */}
-        <div className={`${
-            isChatOpen ? 'hidden' : 'block'
-          } w-full md:flex flex-col md:w-auto bg-white shadow-md md:shadow-none z-10 md:z-auto overflow-y-auto`}>
-          <div className="p-4 border-b md:border-b-0">
-            <h2 className="text-lg font-semibold">Friends</h2>
-          </div>
-          <ul>
-            {peerJobs.map((peer) => (
-              <li key={peer.username} className="flex justify-between items-center p-2 hover:bg-gray-100">
-                <span>{peer.name} (@{peer.username})</span>
-                <button
-                  className="ml-2 inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  onClick={() => startChat(peer.username, peer.name)}
-                >
-                  Chat
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div className={`${isChatOpen ? 'hidden' : 'block'} md:flex flex-col md:w-80 bg-white shadow-md md:shadow-none z-10 md:z-auto overflow-y-auto`}>
+  <div className="p-4 border-b md:border-b-0">
+    <h2 className="text-lg font-semibold">Friends</h2>
+  </div>
+  <ul>
+    {peerJobs.map((peer) => (
+      <li key={peer.username} className="flex justify-between items-center p-2 hover:bg-gray-100">
+        <div className="overflow-auto whitespace-nowrap">
+          <span className="text-sm font-medium">{peer.name} (@{peer.username})</span>
         </div>
+        <button
+          className="ml-2 inline-flex items-center px-3 py-1 border border-transparent rounded-md text-xs font-medium text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          onClick={() => startChat(peer.username, peer.name)}
+        >
+          Chat
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
 
         {/* Main content area */}
         <div className={`${
