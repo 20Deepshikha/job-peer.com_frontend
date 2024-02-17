@@ -48,6 +48,8 @@ const Navbar = () => {
       setActiveLink("jobs");
     } else if (currentPath.startsWith("/leaderboard")) {
       setActiveLink("leaderboard");
+    } else if (currentPath.startsWith("/peerchat")) {
+      setActiveLink("peerchat");
     }
   }, [username]);
 
@@ -103,6 +105,10 @@ const Navbar = () => {
     console.log("Navigating to:", `/leaderboard/${username}`);
     navigate(`/leaderboard/${username}`);
   };
+
+  const handlePeerboard = ()=>{
+    navigate(`/peerchat`)
+  }
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -192,6 +198,17 @@ const Navbar = () => {
                     )}
                   >
                     Peerboard
+                  </a>
+                  <a
+                    onClick={handlePeerboard}
+                    className={classNames(
+                      "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 no-underline cursor-pointer",
+                      activeLink === "peerchat"
+                        ? "border-b-2 border-indigo-500 text-gray-900"
+                        : "hover:border-gray-300 hover:text-gray-700"
+                    )}
+                  >
+                    Peer Chat
                   </a>
                 </div>
               </div>
