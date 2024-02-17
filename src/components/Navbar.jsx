@@ -52,6 +52,7 @@ const Navbar = () => {
       setActiveLink("peerchat");
     }
   }, [username]);
+  
 
   useEffect(() => {
     // Fetch initial notification count on mount
@@ -86,12 +87,23 @@ const Navbar = () => {
       socket.disconnect(); 
     };
   }, [username]);
+  // const handleJobs = () => {
+  //   handleLinkClick("jobs"); // First update the active link
+  //   console.log("activeLink after updating:", activeLink);
+  //   console.log("Navigating to:", `/jobs/${username}`);
+  //   navigate(`/jobs/${username}`); // Then navigate
+  // };
+
   const handleJobs = () => {
-    handleLinkClick("jobs"); // First update the active link
-    console.log("activeLink after updating:", activeLink);
-    console.log("Navigating to:", `/jobs/${username}`);
-    navigate(`/jobs/${username}`); // Then navigate
+    if (storedUser && storedUser.username) {
+      setActiveLink("jobs");
+      navigate(`/jobs/${storedUser.username}`);
+    } else {
+      console.error("Stored user username is undefined. Cannot navigate to jobs.");
+    }
   };
+  
+  
 
   const handleHome = () => {
     handleLinkClick("home"); // First update the active link
@@ -106,9 +118,15 @@ const Navbar = () => {
     navigate(`/leaderboard/${username}`);
   };
 
-  const handlePeerboard = ()=>{
-    navigate(`/peerchat`)
-  }
+  const handlePeerboard = () => {
+    if (storedUser && storedUser.username) {
+      handleLinkClick("peerchat");
+      navigate(`/peerchat/${storedUser.username}`); // Include the username in the path
+    } else {
+      console.error("Stored user username is undefined. Cannot navigate to peer chat.");
+    }
+  };
+  
 
   const handleLogout = () => {
     sessionStorage.clear();

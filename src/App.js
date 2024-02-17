@@ -23,7 +23,7 @@ function App() {
         <Route path='/job_details/:username' element={<ShowDetails/>}/>
         <Route path='/leaderboard/:username' element={<Leaderboard/>}/>
         <Route path='/jobs/:username' element={<ViewAllJobs/>} />
-        <Route path='/peerchat' element={<Peerchat/>} />
+        <Route path='/peerchat/:username' element={<Peerchat/>} />
         <Route path="*" element={<PageNotFound />}/>
       </Routes>
     </Router>
